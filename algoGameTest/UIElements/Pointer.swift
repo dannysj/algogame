@@ -10,34 +10,22 @@ import UIKit
 
 class Pointer: UIView {
 
-    
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.backgroundColor = UIColor.blue
-        //initPointer()
-        
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     func initPointer() {
         let rect = self.bounds
         
-        print(self.frame)
+        print(rect)
+        let d = CAShapeLayer()
+        d.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        d.position = CGPoint(x: self.layer.bounds.midX, y: self.layer.bounds.midY)
+       
+        let path = UIBezierPath(polygonIn: CGRect(x: -rect.width / 2, y: -rect.height / 2, width: rect.width, height: rect.height   ), sides: 3, lineWidth: 1, borderWidth: 1, cornerRadius: 2)
         
-        let path = UIBezierPath(polygonIn: rect, sides: 3, lineWidth: 1, borderWidth: 1, cornerRadius: 2)
-        path.apply(CGAffineTransform.init(rotationAngle: CGFloat.pi))
+        //path.apply(CGAffineTransform.init(rotationAngle: CGFloat.pi))
         
         path.lineCapStyle = .round
         path.lineJoinStyle = .round
         path.lineWidth = 2
         
-        let d = CAShapeLayer()
         d.path = path.cgPath
         d.lineCap = kCALineCapRound
         d.lineJoin = kCALineJoinRound
@@ -45,6 +33,8 @@ class Pointer: UIView {
         d.borderWidth = 2
         d.fillColor = UIColor.FlatColor.Red.brightCoral.cgColor
         d.borderColor = UIColor.FlatColor.Red.brightCoral.cgColor
+        d.setAffineTransform(CGAffineTransform.init(rotationAngle: CGFloat.pi))
+        d.affineTransform()
         
         self.layer.addSublayer(d)
     }
@@ -53,11 +43,5 @@ class Pointer: UIView {
         super.layoutSubviews()
         initPointer()
     }
-    
-    override func draw(_ rect: CGRect) {
-
-
-    }
- 
 
 }

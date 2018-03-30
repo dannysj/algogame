@@ -110,7 +110,6 @@
 				C32C2DC7206AEA8E00A5F418 /* Sort.swift */,
 				C3B2A0A5206E65980013A8EF /* BarViewController.swift */,
 				C395718A206E966900993BC3 /* CodeVisualizer.swift */,
-				C3B2A0A9206E8FB80013A8EF /* Pointer.swift */,
 				C32C2DC9206B459400A5F418 /* OutputTracer.swift */,
 				C3EAFF6F206C29720033CB89 /* UIElements */,
 				C3EAFF6B206C1E000033CB89 /* ForceDirectedGraph */,
@@ -154,6 +153,7 @@
 			children = (
 				C32E30E32069438900D55114 /* Bot.swift */,
 				C32C2DB92069790D00A5F418 /* FlatButton.swift */,
+				C3B2A0A9206E8FB80013A8EF /* Pointer.swift */,
 				C32E30EB206951AE00D55114 /* CircularProgress.swift */,
 				C32C2DB720696D0000A5F418 /* ConsoleView.swift */,
 			);

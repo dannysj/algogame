@@ -57,6 +57,7 @@ class BarView: UIView {
         return v
     }()
     
+    
     func initDataStructure(arr: [Int]) {
         self.arr = arr
         initUIStructure()

@@ -11,6 +11,14 @@ import UIKit
 class CodeVisualizer: UIView {
 
     private var type: CodeType!
+    private lazy var codeLabel: UILabel = {
+        let l = UILabel()
+        l.translatesAutoresizingMaskIntoConstraints = false
+        l.font = Theme.codeFont()
+        l.textColor = UIColor.white
+        l.numberOfLines = 0
+        return l
+    }()
     
     func initCodeType(type: CodeType) {
         self.type = type
@@ -18,7 +26,14 @@ class CodeVisualizer: UIView {
     }
     
     func initWindow() {
+        self.addSubview(codeLabel)
+        NSLayoutConstraint.activate([
+            codeLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 30),
+            codeLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 30),
+            codeLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+            ])
         
+        codeLabel.text = type.code
     }
     
     func showArrow() {
@@ -29,7 +44,8 @@ class CodeVisualizer: UIView {
 }
 
 enum CodeType {
-    case dfs
+    case dfslexi
+    case dfsnonlexi
     case bfs
     case dijkstra
     case trace1
@@ -39,8 +55,10 @@ enum CodeType {
 
     var code: String {
         switch self {
-        case .dfs:
-            return CodeString.dfs()
+        case .dfslexi:
+            return CodeString.dfslexi()
+        case .dfsnonlexi:
+            return CodeString.dfsnonlexi()
         case .bfs:
             return CodeString.bfs()
         case .dijkstra:
