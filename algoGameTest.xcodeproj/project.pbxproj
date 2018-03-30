@@ -7,14 +7,45 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C32C2DB620696CA400A5F418 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C2DB520696CA400A5F418 /* Theme.swift */; };
+		C32C2DB820696D0000A5F418 /* ConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C2DB720696D0000A5F418 /* ConsoleView.swift */; };
+		C32C2DBA2069790D00A5F418 /* FlatButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C2DB92069790D00A5F418 /* FlatButton.swift */; };
+		C32C2DC2206A9DC500A5F418 /* Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C2DC1206A9DC500A5F418 /* Graph.swift */; };
+		C32C2DC4206AC37700A5F418 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C2DC3206AC37700A5F418 /* Utils.swift */; };
+		C32C2DC8206AEA8E00A5F418 /* Sort.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C2DC7206AEA8E00A5F418 /* Sort.swift */; };
+		C32C2DCA206B459400A5F418 /* OutputTracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C2DC9206B459400A5F418 /* OutputTracer.swift */; };
 		C32E30D22069437D00D55114 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32E30D12069437D00D55114 /* AppDelegate.swift */; };
 		C32E30D42069437D00D55114 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32E30D32069437D00D55114 /* ViewController.swift */; };
 		C32E30D72069437D00D55114 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C32E30D52069437D00D55114 /* Main.storyboard */; };
 		C32E30D92069437F00D55114 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C32E30D82069437F00D55114 /* Assets.xcassets */; };
 		C32E30DC2069437F00D55114 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C32E30DA2069437F00D55114 /* LaunchScreen.storyboard */; };
+		C32E30E42069438900D55114 /* Bot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32E30E32069438900D55114 /* Bot.swift */; };
+		C32E30E7206945F700D55114 /* UIBezierPath+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32E30E5206945F600D55114 /* UIBezierPath+Extension.swift */; };
+		C32E30E8206945F700D55114 /* UIColor+FlatColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32E30E6206945F700D55114 /* UIColor+FlatColorExtension.swift */; };
+		C32E30EC206951AE00D55114 /* CircularProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32E30EB206951AE00D55114 /* CircularProgress.swift */; };
+		C3690244206C86AD00367606 /* CGMutablePath+addArrowLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3690243206C86AD00367606 /* CGMutablePath+addArrowLine.swift */; };
+		C3690246206D175700367606 /* ForceDirectedGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3690245206D175700367606 /* ForceDirectedGraph.swift */; };
+		C3690248206D1E7300367606 /* GraphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3690247206D1E7300367606 /* GraphViewController.swift */; };
+		C395718B206E966900993BC3 /* CodeVisualizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C395718A206E966900993BC3 /* CodeVisualizer.swift */; };
+		C395718D206E972B00993BC3 /* CodeString.swift in Sources */ = {isa = PBXBuildFile; fileRef = C395718C206E972B00993BC3 /* CodeString.swift */; };
+		C3B2A0A2206DE3250013A8EF /* BarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B2A0A1206DE3250013A8EF /* BarView.swift */; };
+		C3B2A0A6206E65980013A8EF /* BarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B2A0A5206E65980013A8EF /* BarViewController.swift */; };
+		C3B2A0A8206E67DB0013A8EF /* Collection+Shuffle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B2A0A7206E67DB0013A8EF /* Collection+Shuffle.swift */; };
+		C3B2A0AA206E8FB80013A8EF /* Pointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B2A0A9206E8FB80013A8EF /* Pointer.swift */; };
+		C3EAFF66206C11CA0033CB89 /* QuadTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3EAFF65206C11CA0033CB89 /* QuadTree.swift */; };
+		C3EAFF68206C134D0033CB89 /* Particles+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3EAFF67206C134D0033CB89 /* Particles+View.swift */; };
+		C3EAFF6A206C158A0033CB89 /* Center+Force.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3EAFF69206C158A0033CB89 /* Center+Force.swift */; };
+		C3EAFF6D206C22F80033CB89 /* System+Links.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3EAFF6C206C22F80033CB89 /* System+Links.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C32C2DB520696CA400A5F418 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		C32C2DB720696D0000A5F418 /* ConsoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleView.swift; sourceTree = "<group>"; };
+		C32C2DB92069790D00A5F418 /* FlatButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlatButton.swift; sourceTree = "<group>"; };
+		C32C2DC1206A9DC500A5F418 /* Graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graph.swift; sourceTree = "<group>"; };
+		C32C2DC3206AC37700A5F418 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		C32C2DC7206AEA8E00A5F418 /* Sort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sort.swift; sourceTree = "<group>"; };
+		C32C2DC9206B459400A5F418 /* OutputTracer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputTracer.swift; sourceTree = "<group>"; };
 		C32E30CE2069437D00D55114 /* algoGameTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = algoGameTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C32E30D12069437D00D55114 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C32E30D32069437D00D55114 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -22,6 +53,23 @@
 		C32E30D82069437F00D55114 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C32E30DB2069437F00D55114 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C32E30DD2069437F00D55114 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C32E30E32069438900D55114 /* Bot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bot.swift; sourceTree = "<group>"; };
+		C32E30E5206945F600D55114 /* UIBezierPath+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIBezierPath+Extension.swift"; sourceTree = "<group>"; };
+		C32E30E6206945F700D55114 /* UIColor+FlatColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+FlatColorExtension.swift"; sourceTree = "<group>"; };
+		C32E30EB206951AE00D55114 /* CircularProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgress.swift; sourceTree = "<group>"; };
+		C3690243206C86AD00367606 /* CGMutablePath+addArrowLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGMutablePath+addArrowLine.swift"; sourceTree = "<group>"; };
+		C3690245206D175700367606 /* ForceDirectedGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceDirectedGraph.swift; sourceTree = "<group>"; };
+		C3690247206D1E7300367606 /* GraphViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphViewController.swift; sourceTree = "<group>"; };
+		C395718A206E966900993BC3 /* CodeVisualizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeVisualizer.swift; sourceTree = "<group>"; };
+		C395718C206E972B00993BC3 /* CodeString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeString.swift; sourceTree = "<group>"; };
+		C3B2A0A1206DE3250013A8EF /* BarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarView.swift; sourceTree = "<group>"; };
+		C3B2A0A5206E65980013A8EF /* BarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarViewController.swift; sourceTree = "<group>"; };
+		C3B2A0A7206E67DB0013A8EF /* Collection+Shuffle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Collection+Shuffle.swift"; sourceTree = "<group>"; };
+		C3B2A0A9206E8FB80013A8EF /* Pointer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pointer.swift; sourceTree = "<group>"; };
+		C3EAFF65206C11CA0033CB89 /* QuadTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuadTree.swift; sourceTree = "<group>"; };
+		C3EAFF67206C134D0033CB89 /* Particles+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Particles+View.swift"; sourceTree = "<group>"; };
+		C3EAFF69206C158A0033CB89 /* Center+Force.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Center+Force.swift"; sourceTree = "<group>"; };
+		C3EAFF6C206C22F80033CB89 /* System+Links.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "System+Links.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,12 +104,60 @@
 			children = (
 				C32E30D12069437D00D55114 /* AppDelegate.swift */,
 				C32E30D32069437D00D55114 /* ViewController.swift */,
+				C32C2DC1206A9DC500A5F418 /* Graph.swift */,
+				C3690247206D1E7300367606 /* GraphViewController.swift */,
+				C3B2A0A1206DE3250013A8EF /* BarView.swift */,
+				C32C2DC7206AEA8E00A5F418 /* Sort.swift */,
+				C3B2A0A5206E65980013A8EF /* BarViewController.swift */,
+				C395718A206E966900993BC3 /* CodeVisualizer.swift */,
+				C3B2A0A9206E8FB80013A8EF /* Pointer.swift */,
+				C32C2DC9206B459400A5F418 /* OutputTracer.swift */,
+				C3EAFF6F206C29720033CB89 /* UIElements */,
+				C3EAFF6B206C1E000033CB89 /* ForceDirectedGraph */,
+				C3EAFF6E206C29530033CB89 /* Utils */,
 				C32E30D52069437D00D55114 /* Main.storyboard */,
 				C32E30D82069437F00D55114 /* Assets.xcassets */,
 				C32E30DA2069437F00D55114 /* LaunchScreen.storyboard */,
 				C32E30DD2069437F00D55114 /* Info.plist */,
 			);
 			path = algoGameTest;
+			sourceTree = "<group>";
+		};
+		C3EAFF6B206C1E000033CB89 /* ForceDirectedGraph */ = {
+			isa = PBXGroup;
+			children = (
+				C3EAFF67206C134D0033CB89 /* Particles+View.swift */,
+				C3EAFF69206C158A0033CB89 /* Center+Force.swift */,
+				C3690245206D175700367606 /* ForceDirectedGraph.swift */,
+				C3EAFF6C206C22F80033CB89 /* System+Links.swift */,
+				C3EAFF65206C11CA0033CB89 /* QuadTree.swift */,
+			);
+			path = ForceDirectedGraph;
+			sourceTree = "<group>";
+		};
+		C3EAFF6E206C29530033CB89 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				C32C2DC3206AC37700A5F418 /* Utils.swift */,
+				C32E30E5206945F600D55114 /* UIBezierPath+Extension.swift */,
+				C3B2A0A7206E67DB0013A8EF /* Collection+Shuffle.swift */,
+				C395718C206E972B00993BC3 /* CodeString.swift */,
+				C32C2DB520696CA400A5F418 /* Theme.swift */,
+				C3690243206C86AD00367606 /* CGMutablePath+addArrowLine.swift */,
+				C32E30E6206945F700D55114 /* UIColor+FlatColorExtension.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		C3EAFF6F206C29720033CB89 /* UIElements */ = {
+			isa = PBXGroup;
+			children = (
+				C32E30E32069438900D55114 /* Bot.swift */,
+				C32C2DB92069790D00A5F418 /* FlatButton.swift */,
+				C32E30EB206951AE00D55114 /* CircularProgress.swift */,
+				C32C2DB720696D0000A5F418 /* ConsoleView.swift */,
+			);
+			path = UIElements;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -135,8 +231,32 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C32C2DBA2069790D00A5F418 /* FlatButton.swift in Sources */,
+				C3690244206C86AD00367606 /* CGMutablePath+addArrowLine.swift in Sources */,
+				C32C2DCA206B459400A5F418 /* OutputTracer.swift in Sources */,
+				C3EAFF6A206C158A0033CB89 /* Center+Force.swift in Sources */,
+				C32E30E42069438900D55114 /* Bot.swift in Sources */,
+				C3B2A0A6206E65980013A8EF /* BarViewController.swift in Sources */,
+				C32E30EC206951AE00D55114 /* CircularProgress.swift in Sources */,
+				C395718B206E966900993BC3 /* CodeVisualizer.swift in Sources */,
+				C32C2DB820696D0000A5F418 /* ConsoleView.swift in Sources */,
+				C32E30E8206945F700D55114 /* UIColor+FlatColorExtension.swift in Sources */,
+				C32C2DC8206AEA8E00A5F418 /* Sort.swift in Sources */,
+				C3690248206D1E7300367606 /* GraphViewController.swift in Sources */,
 				C32E30D42069437D00D55114 /* ViewController.swift in Sources */,
+				C32C2DC2206A9DC500A5F418 /* Graph.swift in Sources */,
+				C3B2A0A2206DE3250013A8EF /* BarView.swift in Sources */,
 				C32E30D22069437D00D55114 /* AppDelegate.swift in Sources */,
+				C3B2A0A8206E67DB0013A8EF /* Collection+Shuffle.swift in Sources */,
+				C3690246206D175700367606 /* ForceDirectedGraph.swift in Sources */,
+				C3B2A0AA206E8FB80013A8EF /* Pointer.swift in Sources */,
+				C32E30E7206945F700D55114 /* UIBezierPath+Extension.swift in Sources */,
+				C3EAFF6D206C22F80033CB89 /* System+Links.swift in Sources */,
+				C3EAFF68206C134D0033CB89 /* Particles+View.swift in Sources */,
+				C3EAFF66206C11CA0033CB89 /* QuadTree.swift in Sources */,
+				C32C2DB620696CA400A5F418 /* Theme.swift in Sources */,
+				C32C2DC4206AC37700A5F418 /* Utils.swift in Sources */,
+				C395718D206E972B00993BC3 /* CodeString.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
