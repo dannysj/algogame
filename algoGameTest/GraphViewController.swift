@@ -8,17 +8,22 @@
 
 import UIKit
 
-class GraphViewController: UIViewController {
+class ViewController: UIViewController, UpdateGraphStatusDelegate {
+ 
     // graph data structure
     private var graph: AdjacencyListGraph<String>!
-    private let maxNodeCount: Int = 15
-    private let minNodeCount: Int = 8
+    private let maxNodeCount: Int = 10
+    private let minNodeCount: Int = 6
     // for graph UI
     private let center: Center<ViewNode> = Center(center: .zero)
     private let manyNodes: ManyNodes<ViewNode> = ManyNodes()
     private let system: System<ViewNode> = System()
     
     private let velocityRate: CGFloat = 0.05
+    private var weightRate: CGFloat = 10
+    
+    private let main = DispatchQueue.main
+    private let global = DispatchQueue.global()
     
     // graph
     fileprivate lazy var forceDirectedGraph: ForceDirectedGraph<ViewNode> = {
@@ -27,6 +32,7 @@ class GraphViewController: UIViewController {
         fdg.insertForce(self.system)
         fdg.insertForce(self.center)
         fdg.insertTick({ self.linkLayer.path = self.system.arrow(from: &$0) })
+        
         return fdg
     } ()
     
@@ -49,6 +55,14 @@ class GraphViewController: UIViewController {
         return layer
     } ()
     
+    private var buttonSideLength: CGFloat = 80.0
+    private lazy var flatButton: FlatButton = {
+        let buttonRect = CGRect(x: 0, y: 0, width: buttonSideLength, height: buttonSideLength)
+        let button = FlatButton(frame: buttonRect)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     private var currentBotNode: Int = 0
     private var nodeSize: CGFloat = 30
     private var botOffset: CGFloat = 0
@@ -57,7 +71,8 @@ class GraphViewController: UIViewController {
     private var nodesLoc: [Int] = []
     private var botNode: ViewNode!
     
-
+    // code type
+    private var codeType: CodeType!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,6 +85,9 @@ class GraphViewController: UIViewController {
         botOffset = nodeSize / 2.0
         // Bad way to
         setupGraph()
+        
+        // FIXME: Code type
+        codeType = .dijkstra
     }
     
     // MARK: When View appear
@@ -84,8 +102,28 @@ class GraphViewController: UIViewController {
         forceDirectedGraph.stop()
     }
     override func viewWillLayoutSubviews() {
+        setupView()
+    }
+    
+    // MARK: setup methods
+    
+    func setupView() {
         linkLayer.frame = view.bounds
         center.center = CGPoint(x: linkLayer.frame.midX, y: linkLayer.frame.midY)
+        
+        self.view.addSubview(flatButton)
+        
+        NSLayoutConstraint.activate([
+            flatButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            flatButton.heightAnchor.constraint(equalToConstant: buttonSideLength),
+            flatButton.widthAnchor.constraint(equalToConstant: buttonSideLength),
+            flatButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -30)
+            ])
+        
+        flatButton.initialize(color: UIColor.FlatColor.Red.grapeFruit, secondaryColor: UIColor.FlatColor.Red.grapeFruitDark)
+        
+        let tapGR = UITapGestureRecognizer(target: self, action: #selector(runAlgorithm))
+        flatButton.addGestureRecognizer(tapGR)
     }
 
     override func didReceiveMemoryWarning() {
@@ -102,6 +140,7 @@ class GraphViewController: UIViewController {
     
     func randomSetupGraph() -> Bool {
         graph = AdjacencyListGraph<String>()
+        graph.delegate = self
         let nodeCount = random(min: minNodeCount, max: maxNodeCount)
         
         var unconnected: [Int] = []
@@ -258,11 +297,14 @@ class GraphViewController: UIViewController {
         updateBotLocation(nodeIndex: i)
     }
 
+    // MARK: Helper methods: Creating node + Bot update
+    
     private func node(color: UIColor, diameter: CGFloat, fixed: Bool) -> ViewNode {
         let view = UIView()
         let pad: CGFloat = 10.0
         view.center = CGPoint(x: CGFloat(arc4random_uniform(320)), y: -CGFloat(arc4random_uniform(100)))
         view.bounds = CGRect(x: 0, y: 0, width: diameter + pad * 2, height: diameter + pad * 2)
+        view.alpha = 0.3
         self.view.addSubview(view)
         
         let layer = CAShapeLayer()
@@ -336,4 +378,58 @@ class GraphViewController: UIViewController {
         forceDirectedGraph.nodes.update(with: node)
         
     }
+    
+    // MARK: Run Algortihm
+    @objc func runAlgorithm() {
+        print("Running algorithm")
+        let vertices = graph.topologicalSort()
+        if let s = vertices.first {
+        
+            global.async {
+                switch self.codeType {
+                    case .dfslexi:
+                        self.graph.dfs_lexi(source: s)
+                    case .dfsnonlexi:
+                        self.graph.dfs_nonlexi(source: s)
+                    case .bfs:
+                        self.graph.bfs(source: s)
+                    case .dijkstra:
+                        self.graph.dijkstra(source: s)
+
+                    default:
+                        fatalError("This is graph, unexpected nongraph algorithm")
+                }
+                
+            }
+        }
+    }
+    
+    // Delegate method
+    func updateVertexPosition(at: Int) {
+        main.sync {
+            self.updateBotLocation(nodeIndex: at)
+        }
+        sleep(1)
+    }
+    
+    func updateExplored(at: Int) {
+        var node: ViewNode? = nil
+        
+        for n in forceDirectedGraph.nodes {
+
+            if n.hashValue == nodesLoc[at] {
+                node = n
+            }
+
+        }
+        main.sync {
+            UIView.animate(withDuration: 0.3, animations: {
+                node?.explored = true
+            })
+            print("Updated")
+        }
+        sleep(1)
+    }
 }
+
+

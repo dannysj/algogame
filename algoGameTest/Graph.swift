@@ -8,6 +8,11 @@
 
 import Foundation
 
+protocol UpdateGraphStatusDelegate {
+    func updateVertexPosition(at: Int)
+    func updateExplored(at: Int)
+}
+
 public class Edge<T>: Equatable where T: Hashable {
     public let from: Vertex<T>
     public let to: Vertex<T>
@@ -267,6 +272,9 @@ open class AdjacencyMatrixGraph<T>: Graph<T> where T: Hashable {
 
 // MARK: AdjacencyListGraph
 open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
+    //delegate
+    var delegate: UpdateGraphStatusDelegate?
+    
     fileprivate var adjacencyList: [EdgeList<T>] = []
     
     open override var vertices: [Vertex<T>] {
@@ -399,15 +407,23 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
         var nodesExplored = [source]
         var visited = [source]
         
+        delegate?.updateVertexPosition(at: source.index)
+        delegate?.updateExplored(at: source.index)
+      
         while let c = q.dequeue() {
+            
+            delegate?.updateVertexPosition(at: c.index)
             for edge in edgesFrom(sourceVertex: c) {
                 let neighbor = edge.to
+                
                 if !visited.contains(neighbor) {
                     q.enqueue(neighbor)
                     visited.append(neighbor)
                     nodesExplored.append(neighbor)
+                    delegate?.updateExplored(at: neighbor.index)
                 }
             }
+
         }
         
         return nodesExplored
@@ -427,6 +443,11 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
     public func dfs_lexi(source: Vertex<T>) -> [Vertex<T>] {
         var nodesExplores = [source]
         source.visited = true
+        
+        // Update UI
+        delegate?.updateExplored(at: source.index)
+        delegate?.updateVertexPosition(at: source.index)
+        
         
         for e in edgesFrom(sourceVertex: source) {
             if !(e.to.visited) {
@@ -453,15 +474,19 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
         var visited = [source]
         var s = Stack<Vertex<T>>()
         s.put(source)
-        
+        delegate?.updateVertexPosition(at: source.index)
+        delegate?.updateExplored(at: source.index)
         while !s.isEmpty {
             var v = s.pop()
+            delegate?.updateVertexPosition(at: v!.index)
+            
             if !visited.contains(v!) {
                 visited.append(v!)
                 for e in edgesFrom(sourceVertex: v!) {
+                    print("Edge")
                     if !visited.contains(e.to) {
                         s.put(e.to)
-                        
+                        delegate?.updateExplored(at: e.to.index)
                     }
                 }
                 nodesExplores.append(v!)
@@ -483,6 +508,9 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
         }
         
         source.dist = 0 // distance from source to source
+        delegate?.updateExplored(at: source.index)
+        delegate?.updateVertexPosition(at: source.index)
+
         
         while !q.isEmpty {
             let ut = q.min {$0.dist < $1.dist }// vertex with min dist , remove
@@ -491,6 +519,11 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
                 for e in edgesFrom(sourceVertex: u) {
                     var v = e.to
                     let alt = u.dist + e.weight!
+                    delegate?.updateExplored(at: v.index)
+                    delegate?.updateVertexPosition(at: v.index)
+
+                    
+                    // FIXME: update route
                     if alt < v.dist {
                         v.dist = alt
                         v.prev = u

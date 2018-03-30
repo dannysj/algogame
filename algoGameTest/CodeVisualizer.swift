@@ -29,11 +29,11 @@ class CodeVisualizer: UIView {
         self.addSubview(codeLabel)
         NSLayoutConstraint.activate([
             codeLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 30),
-            codeLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 30),
-            codeLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+            codeLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -30),
+            codeLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 15)
             ])
         
-        codeLabel.text = type.code
+        codeLabel.text = type.code.joined(separator: "\n")
     }
     
     func showArrow() {
@@ -53,7 +53,7 @@ enum CodeType {
     case quickSort
     case insertionSort
 
-    var code: String {
+    var code: [String] {
         switch self {
         case .dfslexi:
             return CodeString.dfslexi()

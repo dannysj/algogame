@@ -15,8 +15,9 @@ class FlatButton: UIView {
     var sideColor: CGColor = UIColor.FlatColor.Green.mintDark.cgColor
     var offset: CGFloat = 0
     
-    func initialize() {
-        
+    func initialize(color: UIColor = UIColor.FlatColor.Green.mintLight, secondaryColor: UIColor = UIColor.FlatColor.Green.mintDark) {
+        self.color = color.cgColor
+        self.sideColor = secondaryColor.cgColor
         let radius = self.frame.height * 0.9 / 2
         offset = radius * 0.2
         print(radius)
@@ -25,7 +26,7 @@ class FlatButton: UIView {
         buttonLayer = CAShapeLayer()
         let circlePath = UIBezierPath(arcCenter: CGPoint(x: self.frame.midX, y: self.frame.midY), radius: radius, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
         buttonLayer.path = circlePath.cgPath
-        buttonLayer.fillColor = color
+        buttonLayer.fillColor = self.color
         
         buttonSideLayer = CAShapeLayer()
         let sidePath = UIBezierPath(arcCenter: CGPoint(x: self.frame.midX, y: self.frame.midY + offset), radius: radius, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)

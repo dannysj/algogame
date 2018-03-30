@@ -28,11 +28,24 @@ public struct ViewNode: Node {
     // to prevent crash
     public let view: Unmanaged<UIView>
     
+    // explored?
+    public var explored: Bool = false {
+        didSet {
+            if explored {
+                    self.view.takeUnretainedValue().alpha = 1.0
+            }
+            else {
+                view.takeUnretainedValue().alpha = 0.3
+            }
+        }
+    }
+    
     public init(view: UIView, fixed: Bool) {
         self.view = .passUnretained(view)
         self.velocity = .zero
         self.position = view.center
         self.fixed = fixed
+        self.explored = false
     }
     
     public var hashValue: Int {

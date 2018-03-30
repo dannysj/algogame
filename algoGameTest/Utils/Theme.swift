@@ -24,7 +24,7 @@ class Theme {
     }
     
     static func codeFont() ->UIFont {
-        return UIFont(name: "Menlo-Regular", size: 15)!
+        return UIFont(name: "Menlo-Regular", size: 13)!
     }
 
     static func codeTitleFont() ->UIFont {

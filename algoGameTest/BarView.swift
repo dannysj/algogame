@@ -46,7 +46,7 @@ class BarView: UIView {
     private var padding: CGFloat = 5.0
     private var barWidth: CGFloat = 20.0
     private var sidePadding: CGFloat = 15.0
-    private var ratio: CGFloat = 15.0
+    private var ratio: CGFloat = 10.0
     
     // elements
     private lazy var pointer: Pointer = {
@@ -56,9 +56,10 @@ class BarView: UIView {
         centerView.addSubview(v)
         return v
     }()
+    private var line: CAShapeLayer!
     
     
-    func initDataStructure(arr: [Int]) {
+    func initDataStructure(arr: inout [Int]) {
         self.arr = arr
         initUIStructure()
     }
@@ -156,10 +157,10 @@ class BarView: UIView {
     }
     
     public func pointer(at: Int) {
-        
         let v = bars[at]
-        pointer.center = CGPoint(x: v.center.x,  y: v.frame.minY - barWidth * 1.0 )
-
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+           self.pointer.center = CGPoint(x: v.center.x,  y: v.frame.minY - self.barWidth * 1.0 )
+        })
     }
     
     public func removePointer() {
@@ -170,11 +171,11 @@ class BarView: UIView {
         let atNode = bars[at]
         let beginNode = bars[from]
         
-        let line = CAShapeLayer()
+        line = CAShapeLayer()
         
         let maxY = atNode.frame.origin.y - 5
-        let atX = atNode.frame.maxX
-        let beginX = beginNode.frame.origin.x
+        let atX = atNode.frame.maxX - padding / 2
+        let beginX = beginNode.frame.origin.x + padding / 2
         
         let path = UIBezierPath()
         
@@ -188,8 +189,23 @@ class BarView: UIView {
         line.strokeColor = UIColor.FlatColor.Blue.aliceBlue.cgColor
         line.lineDashPattern = [12,8]
         line.lineWidth = 4.0
+        line.strokeEnd = 0
         
         centerView.layer.addSublayer(line)
+        
+        // animation
+        let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
+        basicAnimation.fillMode = kCAFillModeForwards
+        
+        basicAnimation.toValue = 1
+        basicAnimation.duration = 0.5
+        basicAnimation.isRemovedOnCompletion = false
+        line.add(basicAnimation, forKey: "strokeEnd")
+        
+    }
+    
+    public func removeDashLine() {
+        line.removeFromSuperlayer()
     }
     
     // MARK: Algorithm
