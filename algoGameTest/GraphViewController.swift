@@ -173,7 +173,7 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
         
         // iterate each level, replace array, unconnected for that level, check SCC
         while !unconnected.isEmpty {
-            print("Nonstop love")
+          
             var rFromIndex = random(min: 1, max: nodeCount - 1)
             //let rToIndex = Int(arc4random_uniform(UInt32(unconnected.count)))
             let rToIndex = random(min: 1, max: nodeCount - 1)
@@ -193,13 +193,12 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
                     return false
                 }
                 sccCounter += 1
-                print("SCC")
+              
                 graph.removeLastDirectedEdge(from: aNode)
                 rFromIndex = random(min: 1, max: nodeCount - 1)
                 while rFromIndex == rToIndex  {
                     rFromIndex = random(min: 1, max: nodeCount - 1)
-                    print("\(rFromIndex) -> \(rToIndex)")
-                    print(unconnected)
+  
                 }
                 aNode = graph.vertices[rFromIndex]
                 graph.addDirectedEdge(from: aNode, to: bNode, withWeight: randomWeight)
@@ -228,7 +227,16 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
                 guard aIndex != bIndex else {
                     fatalError()
                 }
-                 system.link(from: nodes[aIndex], to: nodes[bIndex], distance: CGFloat(e.weight!))
+                 let dis = CGFloat(e.weight!)
+                 system.link(from: nodes[aIndex], to: nodes[bIndex], distance: dis)
+                
+                if codeType == .dijkstra {
+                   print("It's dijkstra")
+                    let n = node(color: UIColor.white, diameter: nodeSize, fixed: false, isWeight: true, distance: dis)
+                    forceDirectedGraph.insertNode(n)
+                    system.link(from: n, to: nodes[aIndex], distance: dis / 2.0 - nodeSize / 2.0, strength: nil, transparent: true)
+                    system.link(from: n, to: nodes[bIndex], distance: dis / 2.0 - nodeSize / 2.0, strength: nil, transparent: true)
+                }
             }
             else {
                 fatalError()
@@ -299,13 +307,30 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
 
     // MARK: Helper methods: Creating node + Bot update
     
-    private func node(color: UIColor, diameter: CGFloat, fixed: Bool) -> ViewNode {
+    private func node(color: UIColor, diameter: CGFloat, fixed: Bool, isWeight: Bool = false, distance: CGFloat = 0.0) -> ViewNode {
         let view = UIView()
         let pad: CGFloat = 10.0
         view.center = CGPoint(x: CGFloat(arc4random_uniform(320)), y: -CGFloat(arc4random_uniform(100)))
         view.bounds = CGRect(x: 0, y: 0, width: diameter + pad * 2, height: diameter + pad * 2)
         view.alpha = 0.3
         self.view.addSubview(view)
+        
+        if isWeight {
+            print("It's dijkstra2")
+            let label = UILabel()
+            label.font = Theme.codeFont()
+            label.textColor = UIColor.white
+            label.textAlignment = .center
+            label.text = "\(Double(distance))"
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            NSLayoutConstraint.activate([
+                label.heightAnchor.constraint(equalTo: view.heightAnchor),
+                label.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+                label.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                label.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+                ])
+        }
         
         let layer = CAShapeLayer()
         layer.frame = view.bounds

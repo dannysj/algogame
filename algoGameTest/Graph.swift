@@ -421,7 +421,9 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
                     visited.append(neighbor)
                     nodesExplored.append(neighbor)
                     delegate?.updateExplored(at: neighbor.index)
+                    delegate?.updateVertexPosition(at: neighbor.index)
                 }
+                delegate?.updateVertexPosition(at: c.index)
             }
 
         }
@@ -452,7 +454,7 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
         for e in edgesFrom(sourceVertex: source) {
             if !(e.to.visited) {
                 nodesExplores += dfs_lexi(source: e.to)
-                
+                delegate?.updateVertexPosition(at: source.index)
             }
         }
         
@@ -470,27 +472,34 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
      9                  S.push(w)
      */
     public func dfs_nonlexi(source: Vertex<T>) -> [Vertex<T>] {
-        var nodesExplores = [source]
-        var visited = [source]
+        var nodesExplores = [Vertex<T>]()
+        var visited = [Vertex<T>]()
         var s = Stack<Vertex<T>>()
         s.put(source)
-        delegate?.updateVertexPosition(at: source.index)
-        delegate?.updateExplored(at: source.index)
+
         while !s.isEmpty {
             var v = s.pop()
-            delegate?.updateVertexPosition(at: v!.index)
-            
             if !visited.contains(v!) {
+                let vIndex = visited.count
+                
+                delegate?.updateExplored(at: v!.index)
+                delegate?.updateVertexPosition(at: v!.index)
                 visited.append(v!)
                 for e in edgesFrom(sourceVertex: v!) {
                     print("Edge")
                     if !visited.contains(e.to) {
                         s.put(e.to)
-                        delegate?.updateExplored(at: e.to.index)
+
                     }
+                    
+                }
+                if !nodesExplores.isEmpty {
+                    delegate?.updateVertexPosition(at: nodesExplores.last!.index)
                 }
                 nodesExplores.append(v!)
+                
             }
+            
         }
 
         return nodesExplores
