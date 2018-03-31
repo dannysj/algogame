@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UpdateGraphStatusDelegate {
+class GraphViewController: UIViewController, UpdateGraphStatusDelegate {
     // graph data structure
     private var graph: AdjacencyListGraph<String>!
     private let maxNodeCount: Int = 10
@@ -63,11 +63,7 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-    private var containerHeight: CGFloat = 200 {
-        didSet {
-            container.heightAnchor.constraint(equalToConstant: containerHeight).isActive = true
-        }
-    }
+    private var containerHeight: CGFloat = 200
     private var container: CurrentContainer!
     
     private var gameLabel: UILabel!
@@ -94,7 +90,9 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
         // FIXME: Code type
         codeType = .dijkstra
         // Bad way to
+       
         setupGraph()
+        setupView()
     }
     
     // MARK: When View appear
@@ -109,7 +107,8 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
         forceDirectedGraph.stop()
     }
     override func viewWillLayoutSubviews() {
-        setupView()
+        super.viewWillLayoutSubviews()
+        //setupView()
     }
     
     // MARK: setup methods
@@ -148,10 +147,8 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
         gameLabel.textAlignment = .center
         gameLabel.textColor = Theme.lineColor()
         
+        setupContainer()
         //
-
-        
-        
         switch codeType {
      
             case .dfsnonlexi:
@@ -165,6 +162,7 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
                 // do nth
                 break
         }
+        
         
     }
 
@@ -189,7 +187,7 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
         NSLayoutConstraint.activate([
             container.topAnchor.constraint(equalTo: gameLabel.bottomAnchor, constant: 15),
             container.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -15),
-            
+            container.heightAnchor.constraint(equalToConstant: containerHeight),
             container.widthAnchor.constraint(equalToConstant: 50)
             ])
     }
@@ -198,6 +196,7 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
         graph = AdjacencyListGraph<String>()
         graph.delegate = self
         let nodeCount = random(min: minNodeCount, max: maxNodeCount)
+        
         containerHeight = CGFloat(nodeCount * 25 + 35)
         
         var unconnected: [Int] = []
@@ -230,7 +229,7 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
         
         // iterate each level, replace array, unconnected for that level, check SCC
         while !unconnected.isEmpty {
-          
+
             var rFromIndex = random(min: 1, max: nodeCount - 1)
             //let rToIndex = Int(arc4random_uniform(UInt32(unconnected.count)))
             let rToIndex = random(min: 1, max: nodeCount - 1)
@@ -281,6 +280,7 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
         }
         
         for e in graph.edges {
+            print("Stick")
             if let aIndex = graph.vertices.index(of: e.from),let bIndex = graph.vertices.index(of: e.to) {
                 guard aIndex != bIndex else {
                     fatalError()
@@ -311,7 +311,7 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
         currentBotNode = 0
         
 
-        
+        print("Ended")
         // success
         return true
     }

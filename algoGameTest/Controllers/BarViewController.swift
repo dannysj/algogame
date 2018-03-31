@@ -53,9 +53,10 @@ class BarViewController: UIViewController, UpdateLeakyStatusDelegate {
         self.view.backgroundColor = Theme.backgroundColor()
         // Do any additional setup after loading the view.
         codeVHeight = UIScreen.main.bounds.height - barViewHeight - buttonSideLength - 60
-        initBarView()
         // codeType
         codeType = .quickSort
+        initBarView()
+
     }
     
     func initBarView() {
@@ -83,7 +84,7 @@ class BarViewController: UIViewController, UpdateLeakyStatusDelegate {
             codeVisualizer.heightAnchor.constraint(equalToConstant: codeVHeight)
             ])
        
-        codeVisualizer.initCodeType(type: .quickSort)
+        codeVisualizer.initCodeType(type: codeType)
         
         self.view.addSubview(flatButton)
         

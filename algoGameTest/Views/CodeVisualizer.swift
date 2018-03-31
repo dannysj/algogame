@@ -74,4 +74,26 @@ enum CodeType {
 
         }
     }
+    
+    var name: String {
+        switch self {
+        case .dfslexi:
+            return "Depth First Search (Lexi-)"
+        case .dfsnonlexi:
+            return "Depth First Search (Non-Lexi)"
+        case .bfs:
+            return "Breadth First Search"
+        case .dijkstra:
+            return "Dijkstra's Algorithm"
+        case .trace2:
+            return "Tracing Time!"
+        case .trace1:
+            return "Tracing Time!"
+        case .quickSort:
+            return "Quick Sort"
+        case .insertionSort:
+            return "Insertion Sort"
+            
+        }
+    }
 }

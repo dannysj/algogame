@@ -189,11 +189,44 @@ class CodeString {
     }
     
     static func trace1() -> [String] {
-        return []
+        return [
+        "for i in 1 ..< n+1 {",
+        "   var j = n",
+        "   var str = \"\"",
+        "   while (j > i) {",
+        "       str += \" \"",
+        "       j -= 1",
+        "   }",
+        "   while (j >= 0) {",
+        "       str += \"*\"",
+        "       j -= 1",
+        "   }",
+        "   print(str)",
+        "}"
+        ]
     }
     
     static func trace2() -> [String] {
-        return []
+        return [
+            "for i in 1 to n+1:",
+            "   var str = \"\"",
+            "   for j in 1 to (n - i) :",
+            "       str += \" \"",
+
+            "   for _ in 1 to i :",
+            "       str += \"* \"",
+
+            "   print(str)",
+            "k = 0",
+            "for i in n to 0:",
+            "   var str = \"\"",
+            "   for j in 1 to k - 1 :",
+            "       str += \" \"",
+            "   k += 1",
+            "   for j in 1 to i :",
+            "       str += \"* \"",
+            "   print(str)",
+        ]
     }
     
 

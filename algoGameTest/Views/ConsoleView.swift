@@ -19,7 +19,7 @@ class ConsoleView: UIView {
     */
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+      
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -32,9 +32,9 @@ class ConsoleView: UIView {
         self.layer.borderColor = UIColor(hex: 0xE0E0E0).cgColor
         self.backgroundColor = UIColor(hex: 0x2A4383)
         
-        let upperWindowHeight = self.frame.height * 0.07
+        let upperWindowHeight = self.frame.height * 0.08
         let upperWindows = CAShapeLayer()
-        let rect = CGRect(x: self.frame.minX, y: self.frame.minY, width: self.frame.width, height: upperWindowHeight)
+        let rect = CGRect(x: self.bounds.minX, y: self.bounds.minY, width: self.frame.width, height: upperWindowHeight)
         print(rect)
         print(self.bounds)
         print(self.frame)
@@ -66,6 +66,11 @@ class ConsoleView: UIView {
         upperWindows.addSublayer(greenDot)
         
         
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        initFrame()
     }
 
 }

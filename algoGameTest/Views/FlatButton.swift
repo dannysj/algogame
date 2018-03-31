@@ -12,6 +12,7 @@ enum ButtonType {
     case Alert
     case Info
     case Ok
+    case Close
 }
 
 class FlatButton: UIView {
@@ -34,6 +35,9 @@ class FlatButton: UIView {
         case .Ok:
             initialize()
             addText(text: "OK")
+        case .Close:
+            initialize(color: UIColor.white, secondaryColor: UIColor.FlatColor.White.lightGray)
+            addText(text: "X")
         }
     }
     
@@ -46,12 +50,12 @@ class FlatButton: UIView {
         print(self.frame.midX)
         print(self.frame.midY)
         buttonLayer = CAShapeLayer()
-        let circlePath = UIBezierPath(arcCenter: CGPoint(x: self.frame.midX, y: self.frame.midY), radius: radius, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
+        let circlePath = UIBezierPath(arcCenter: CGPoint(x: self.bounds.midX, y: self.bounds.midY - offset / 2), radius: radius, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
         buttonLayer.path = circlePath.cgPath
         buttonLayer.fillColor = self.color
         
         buttonSideLayer = CAShapeLayer()
-        let sidePath = UIBezierPath(arcCenter: CGPoint(x: self.frame.midX, y: self.frame.midY + offset), radius: radius, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
+        let sidePath = UIBezierPath(arcCenter: CGPoint(x: self.bounds.midX, y: self.bounds.midY + offset / 2), radius: radius, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
         sidePath.lineCapStyle = .round
         sidePath.lineJoinStyle = .round
         buttonSideLayer.path = sidePath.cgPath
@@ -75,6 +79,9 @@ class FlatButton: UIView {
             case .Ok:
                 label.textColor = UIColor.white
                 label.font = UIFont(name: "Menlo-Regular", size: 35)
+            case .Close:
+                label.textColor = UIColor.clear
+                label.font = UIFont(name: "Menlo-Bold", size: 40)
             default:
                 fatalError()
         }

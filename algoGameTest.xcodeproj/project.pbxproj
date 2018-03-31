@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C3143947206FEE7F002409C8 /* StatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3143946206FEE7F002409C8 /* StatusViewController.swift */; };
+		C3143949206FFC9E002409C8 /* TracerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3143948206FFC9E002409C8 /* TracerViewController.swift */; };
+		C314394D207040F4002409C8 /* String+HeightExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C314394C207040F4002409C8 /* String+HeightExtension.swift */; };
 		C3287C62206F34260073A9D6 /* CurrentContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3287C61206F34260073A9D6 /* CurrentContainer.swift */; };
 		C3287C64206F344F0073A9D6 /* ScoreArithmeticHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3287C63206F344F0073A9D6 /* ScoreArithmeticHUD.swift */; };
 		C3287C66206F3F660073A9D6 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3287C65206F3F660073A9D6 /* TutorialViewController.swift */; };
@@ -43,6 +46,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C3143946206FEE7F002409C8 /* StatusViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusViewController.swift; sourceTree = "<group>"; };
+		C3143948206FFC9E002409C8 /* TracerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracerViewController.swift; sourceTree = "<group>"; };
+		C314394C207040F4002409C8 /* String+HeightExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HeightExtension.swift"; sourceTree = "<group>"; };
 		C3287C61206F34260073A9D6 /* CurrentContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentContainer.swift; sourceTree = "<group>"; };
 		C3287C63206F344F0073A9D6 /* ScoreArithmeticHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreArithmeticHUD.swift; sourceTree = "<group>"; };
 		C3287C65206F3F660073A9D6 /* TutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialViewController.swift; sourceTree = "<group>"; };
@@ -91,6 +97,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C314394A20702932002409C8 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				C32E30D32069437D00D55114 /* ViewController.swift */,
+				C3690247206D1E7300367606 /* GraphViewController.swift */,
+				C3B2A0A5206E65980013A8EF /* BarViewController.swift */,
+				C3287C65206F3F660073A9D6 /* TutorialViewController.swift */,
+				C3143946206FEE7F002409C8 /* StatusViewController.swift */,
+				C3143948206FFC9E002409C8 /* TracerViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		C314394B20702954002409C8 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C32C2DC1206A9DC500A5F418 /* Graph.swift */,
+				C3EAFF65206C11CA0033CB89 /* QuadTree.swift */,
+				C32C2DC7206AEA8E00A5F418 /* Sort.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		C32E30C52069437D00D55114 = {
 			isa = PBXGroup;
 			children = (
@@ -111,17 +140,9 @@
 			isa = PBXGroup;
 			children = (
 				C32E30D12069437D00D55114 /* AppDelegate.swift */,
-				C32E30D32069437D00D55114 /* ViewController.swift */,
-				C32C2DC1206A9DC500A5F418 /* Graph.swift */,
-				C3690247206D1E7300367606 /* GraphViewController.swift */,
-				C3B2A0A1206DE3250013A8EF /* BarView.swift */,
-				C32C2DC7206AEA8E00A5F418 /* Sort.swift */,
-				C3B2A0A5206E65980013A8EF /* BarViewController.swift */,
-				C395718A206E966900993BC3 /* CodeVisualizer.swift */,
-				C3287C65206F3F660073A9D6 /* TutorialViewController.swift */,
-				C32C2DC9206B459400A5F418 /* OutputTracer.swift */,
-				C3EAFF6F206C29720033CB89 /* UIElements */,
-				C3EAFF6B206C1E000033CB89 /* ForceDirectedGraph */,
+				C314394A20702932002409C8 /* Controllers */,
+				C314394B20702954002409C8 /* Models */,
+				C3EAFF6F206C29720033CB89 /* Views */,
 				C3EAFF6E206C29530033CB89 /* Utils */,
 				C32E30D52069437D00D55114 /* Main.storyboard */,
 				C32E30D82069437F00D55114 /* Assets.xcassets */,
@@ -138,7 +159,6 @@
 				C3EAFF69206C158A0033CB89 /* Center+Force.swift */,
 				C3690245206D175700367606 /* ForceDirectedGraph.swift */,
 				C3EAFF6C206C22F80033CB89 /* System+Links.swift */,
-				C3EAFF65206C11CA0033CB89 /* QuadTree.swift */,
 			);
 			path = ForceDirectedGraph;
 			sourceTree = "<group>";
@@ -151,6 +171,7 @@
 				C3B2A0A7206E67DB0013A8EF /* Collection+Shuffle.swift */,
 				C3287C67206FB8C90073A9D6 /* UnderlineLabel.swift */,
 				C395718C206E972B00993BC3 /* CodeString.swift */,
+				C314394C207040F4002409C8 /* String+HeightExtension.swift */,
 				C32C2DB520696CA400A5F418 /* Theme.swift */,
 				C3690243206C86AD00367606 /* CGMutablePath+addArrowLine.swift */,
 				C32E30E6206945F700D55114 /* UIColor+FlatColorExtension.swift */,
@@ -158,18 +179,22 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
-		C3EAFF6F206C29720033CB89 /* UIElements */ = {
+		C3EAFF6F206C29720033CB89 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				C32E30E32069438900D55114 /* Bot.swift */,
 				C32C2DB92069790D00A5F418 /* FlatButton.swift */,
 				C3B2A0A9206E8FB80013A8EF /* Pointer.swift */,
+				C32C2DC9206B459400A5F418 /* OutputTracer.swift */,
+				C3B2A0A1206DE3250013A8EF /* BarView.swift */,
+				C395718A206E966900993BC3 /* CodeVisualizer.swift */,
 				C3287C63206F344F0073A9D6 /* ScoreArithmeticHUD.swift */,
 				C3287C61206F34260073A9D6 /* CurrentContainer.swift */,
 				C32E30EB206951AE00D55114 /* CircularProgress.swift */,
 				C32C2DB720696D0000A5F418 /* ConsoleView.swift */,
+				C3EAFF6B206C1E000033CB89 /* ForceDirectedGraph */,
 			);
-			path = UIElements;
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -264,7 +289,9 @@
 				C32E30D22069437D00D55114 /* AppDelegate.swift in Sources */,
 				C3B2A0A8206E67DB0013A8EF /* Collection+Shuffle.swift in Sources */,
 				C3690246206D175700367606 /* ForceDirectedGraph.swift in Sources */,
+				C3143949206FFC9E002409C8 /* TracerViewController.swift in Sources */,
 				C3B2A0AA206E8FB80013A8EF /* Pointer.swift in Sources */,
+				C314394D207040F4002409C8 /* String+HeightExtension.swift in Sources */,
 				C32E30E7206945F700D55114 /* UIBezierPath+Extension.swift in Sources */,
 				C3EAFF6D206C22F80033CB89 /* System+Links.swift in Sources */,
 				C3EAFF68206C134D0033CB89 /* Particles+View.swift in Sources */,
@@ -273,6 +300,7 @@
 				C32C2DC4206AC37700A5F418 /* Utils.swift in Sources */,
 				C3287C64206F344F0073A9D6 /* ScoreArithmeticHUD.swift in Sources */,
 				C395718D206E972B00993BC3 /* CodeString.swift in Sources */,
+				C3143947206FEE7F002409C8 /* StatusViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -24,6 +24,7 @@ class HexagonBot: UIView {
         path2.lineCapStyle = .round
         path2.lineWidth = 5
         
+        
         let stickPoint = CGPoint(x: hexarect.midX + hexarect.width * 0.2, y: rect.origin.y + hexarect.height * 0.2)
         color.setStroke()
         color.setFill()

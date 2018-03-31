@@ -52,8 +52,7 @@ class ViewController2: UIViewController {
         view.layer.addSublayer(circle)
         circle.initialize(point: self.view.center)
 
-        circle.animate()
-        
+
 
         self.view.addSubview(flatButton)
         

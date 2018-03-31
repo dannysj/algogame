@@ -13,14 +13,15 @@ class CircularProgress: CAShapeLayer {
     var color: CGColor = UIColor.FlatColor.Green.mintDark.cgColor
     var radius: CGFloat = 100.0
    
-    func initialize(point: CGPoint) {
+    func initialize(point: CGPoint, radius: CGFloat = 100.0, lineWidth: CGFloat = 10.0) {
         self.strokeColor = color
         self.lineCap = kCALineCapRound
         self.fillColor = UIColor.clear.cgColor
-        self.lineWidth = 10
+        self.lineWidth = lineWidth
         
+        self.radius = radius
         let center = point
-        radius = 100.0
+        
         let startAngle = -CGFloat.pi / 2
         let endAngle = CGFloat.pi * 2 + startAngle
         let path = UIBezierPath(arcCenter: center, radius: radius, startAngle: startAngle , endAngle:  endAngle, clockwise: true)
@@ -33,12 +34,12 @@ class CircularProgress: CAShapeLayer {
         
     }
     
-    func animate() {
+    func animate(toValue: Double) {
         let basicAnimation = CABasicAnimation(keyPath: "strokeStart")
         basicAnimation.fillMode = kCAFillModeForwards
         
         basicAnimation.toValue = 1
-        basicAnimation.duration = 3
+        basicAnimation.duration = toValue
         basicAnimation.isRemovedOnCompletion = false
         self.add(basicAnimation, forKey: "strokeStart")
         
