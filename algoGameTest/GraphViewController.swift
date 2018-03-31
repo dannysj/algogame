@@ -9,7 +9,6 @@
 import UIKit
 
 class ViewController: UIViewController, UpdateGraphStatusDelegate {
- 
     // graph data structure
     private var graph: AdjacencyListGraph<String>!
     private let maxNodeCount: Int = 10
@@ -83,11 +82,10 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
         let tapGR = UITapGestureRecognizer(target: self, action: #selector(randomTest))
         view.addGestureRecognizer(tapGR)
         botOffset = nodeSize / 2.0
-        // Bad way to
-        setupGraph()
-        
         // FIXME: Code type
         codeType = .dijkstra
+        // Bad way to
+        setupGraph()
     }
     
     // MARK: When View appear
@@ -120,7 +118,7 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
             flatButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -30)
             ])
         
-        flatButton.initialize(color: UIColor.FlatColor.Red.grapeFruit, secondaryColor: UIColor.FlatColor.Red.grapeFruitDark)
+        flatButton.initType(type: .Ok)
         
         let tapGR = UITapGestureRecognizer(target: self, action: #selector(runAlgorithm))
         flatButton.addGestureRecognizer(tapGR)
@@ -209,6 +207,7 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
             }
         }
         
+        
         // now setupUI
         var nodes: [ViewNode] = []
         for _ in 0 ..< graph.vertices.count {
@@ -229,11 +228,11 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
                 }
                  let dis = CGFloat(e.weight!)
                  system.link(from: nodes[aIndex], to: nodes[bIndex], distance: dis)
-                
+
                 if codeType == .dijkstra {
-                   print("It's dijkstra")
-                    let n = node(color: UIColor.white, diameter: nodeSize, fixed: false, isWeight: true, distance: dis)
-                    forceDirectedGraph.insertNode(n)
+       
+                    let n = node(color: UIColor.clear, diameter: nodeSize, fixed: false, isWeight: true, distance: dis)
+                    
                     system.link(from: n, to: nodes[aIndex], distance: dis / 2.0 - nodeSize / 2.0, strength: nil, transparent: true)
                     system.link(from: n, to: nodes[bIndex], distance: dis / 2.0 - nodeSize / 2.0, strength: nil, transparent: true)
                 }
@@ -310,13 +309,14 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
     private func node(color: UIColor, diameter: CGFloat, fixed: Bool, isWeight: Bool = false, distance: CGFloat = 0.0) -> ViewNode {
         let view = UIView()
         let pad: CGFloat = 10.0
+        
         view.center = CGPoint(x: CGFloat(arc4random_uniform(320)), y: -CGFloat(arc4random_uniform(100)))
         view.bounds = CGRect(x: 0, y: 0, width: diameter + pad * 2, height: diameter + pad * 2)
         view.alpha = 0.3
         self.view.addSubview(view)
         
         if isWeight {
-            print("It's dijkstra2")
+   
             let label = UILabel()
             label.font = Theme.codeFont()
             label.textColor = UIColor.white
@@ -330,16 +330,39 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
                 label.leadingAnchor.constraint(equalTo: view.leadingAnchor),
                 label.trailingAnchor.constraint(equalTo: view.trailingAnchor)
                 ])
+            view.backgroundColor = UIColor.clear
+            view.alpha = 1.0
         }
-        
-        let layer = CAShapeLayer()
-        layer.frame = view.bounds
-        layer.path = UIBezierPath(ovalIn: layer.frame.insetBy(dx: pad, dy: pad)).cgPath
-        layer.fillColor = color.cgColor
-        layer.strokeColor = Theme.lineColor().cgColor
-        layer.lineWidth = 2
-        view.layer.addSublayer(layer)
-        
+        else {
+            let layer = CAShapeLayer()
+            layer.frame = view.bounds
+            layer.path = UIBezierPath(ovalIn: layer.frame.insetBy(dx: pad, dy: pad)).cgPath
+            layer.fillColor = color.cgColor
+            layer.strokeColor = Theme.lineColor().cgColor
+            layer.lineWidth = 2
+            view.layer.addSublayer(layer)
+            
+            if codeType == .dijkstra {
+
+                print("It's dijkstra3")
+                let label = UILabel()
+                label.font = Theme.codeFont() 
+                label.textColor = UIColor.white
+                label.textAlignment = .center
+                label.text = "∞"
+                label.translatesAutoresizingMaskIntoConstraints = false
+                view.addSubview(label)
+                NSLayoutConstraint.activate([
+                    label.heightAnchor.constraint(equalTo: view.heightAnchor),
+                    label.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+                    label.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                    label.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+                    ])
+                
+            }
+            
+
+        }
         let panGR = UIPanGestureRecognizer(target: self, action: #selector(dragged(_:)))
         view.addGestureRecognizer(panGR)
         
@@ -454,6 +477,10 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
             print("Updated")
         }
         sleep(1)
+    }
+    
+    func updateDijkstraLabel(at: Int, value: Double) {
+        print("Hmm")
     }
 }
 

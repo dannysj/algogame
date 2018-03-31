@@ -8,12 +8,34 @@
 
 import UIKit
 
+enum ButtonType {
+    case Alert
+    case Info
+    case Ok
+}
+
 class FlatButton: UIView {
     var buttonLayer: CAShapeLayer!
     var buttonSideLayer: CAShapeLayer!
     var color: CGColor = UIColor.FlatColor.Green.mintLight.cgColor
     var sideColor: CGColor = UIColor.FlatColor.Green.mintDark.cgColor
     var offset: CGFloat = 0
+    var buttonType: ButtonType!
+    
+    func initType(type: ButtonType) {
+        self.buttonType = type
+        switch type {
+        case .Alert:
+            initialize(color: UIColor.FlatColor.Red.grapeFruit, secondaryColor: UIColor.FlatColor.Red.grapeFruitDark)
+            addText(text: "!")
+        case .Info:
+            initialize(color: UIColor.FlatColor.Blue.blueJeans, secondaryColor: UIColor.FlatColor.Blue.darkerBlueJeans)
+            addText(text: "i")
+        case .Ok:
+            initialize()
+            addText(text: "OK")
+        }
+    }
     
     func initialize(color: UIColor = UIColor.FlatColor.Green.mintLight, secondaryColor: UIColor = UIColor.FlatColor.Green.mintDark) {
         self.color = color.cgColor
@@ -38,6 +60,34 @@ class FlatButton: UIView {
         self.layer.addSublayer(buttonSideLayer)
         self.layer.addSublayer(buttonLayer)
         
+    }
+    
+    func addText(text: String) {
+        let label = UILabel()
+        
+        switch buttonType {
+            case .Alert:
+               label.textColor = UIColor.FlatColor.Red.alizarinCrimson
+               label.font = UIFont(name: "Menlo-Bold", size: 40)
+            case .Info:
+                label.textColor = UIColor.FlatColor.Blue.riptide
+                label.font = UIFont(name: "Menlo-Bold", size: 40)
+            case .Ok:
+                label.textColor = UIColor.white
+                label.font = UIFont(name: "Menlo-Regular", size: 35)
+            default:
+                fatalError()
+        }
+        label.textAlignment = .center
+        label.text = text
+        label.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(label)
+        NSLayoutConstraint.activate([
+            label.heightAnchor.constraint(equalTo: self.heightAnchor),
+            label.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            label.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            label.trailingAnchor.constraint(equalTo: self.trailingAnchor)
+            ])
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

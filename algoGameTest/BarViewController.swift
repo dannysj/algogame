@@ -94,7 +94,7 @@ class BarViewController: UIViewController, UpdateLeakyStatusDelegate {
             flatButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -30)
             ])
         
-        flatButton.initialize(color: UIColor.FlatColor.Red.lightPink)
+         flatButton.initType(type: .Alert)
         
         let buttonTap = UITapGestureRecognizer(target: self, action: #selector(testStart))
         flatButton.addGestureRecognizer(buttonTap)

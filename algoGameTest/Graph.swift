@@ -11,6 +11,7 @@ import Foundation
 protocol UpdateGraphStatusDelegate {
     func updateVertexPosition(at: Int)
     func updateExplored(at: Int)
+    func updateDijkstraLabel(at: Int, value: Double)
 }
 
 public class Edge<T>: Equatable where T: Hashable {
