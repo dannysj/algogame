@@ -17,9 +17,9 @@ public class System<T: Node>: Force {
     private var links: Set<Link<T>> = []
     
     // to link & not linking a system
-    public func link(from: T, to: T, distance: CGFloat? = nil, strength: CGFloat? = nil, transparent: Bool = false) {
+    public func link(from: T, to: T, distance: CGFloat? = nil, strength: CGFloat? = nil, transparent: Bool = false, halfway: Bool = false) {
         //try to check if this is not exist
-        guard links.update(with: Link(from: from, to: to, strength: strength, dist: distance, transparent: transparent)) == nil else {
+        guard links.update(with: Link(from: from, to: to, strength: strength, dist: distance, transparent: transparent, halfway: halfway)) == nil else {
             return
         }
         deg[from] = (deg[from] ?? 0) + 1
@@ -60,7 +60,13 @@ public class System<T: Node>: Force {
             let toPos = nodes[toIndex].position
             
             // FIXME:
-            path.addArrowLine(from: fromPos, to: toPos, spacing: 20)
+            if l.halfway {
+                path.addLineWithSpacing(from: fromPos, to: toPos, spacing: 20)
+            }
+            else {
+               path.addArrowLine(from: fromPos, to: toPos, spacing: 20)
+            }
+            
         }
         return path
     }
@@ -83,17 +89,19 @@ fileprivate struct Link<T: Node>: Hashable {
     let strength: CGFloat?
     let dist: CGFloat?
     var transparent: Bool = false
+    var halfway: Bool = false
     
     var hashValue: Int {
         return from.hashValue ^ to.hashValue
     }
     
-    init(from: T, to: T, strength: CGFloat? = nil, dist: CGFloat? = nil, transparent: Bool = false) {
+    init(from: T, to: T, strength: CGFloat? = nil, dist: CGFloat? = nil, transparent: Bool = false, halfway: Bool = false) {
         self.from = from
         self.to = to
         self.strength = strength
         self.dist = dist
         self.transparent = transparent
+        self.halfway = halfway
     }
     
     public func tick(alpha: CGFloat, degrees: Degrees, distance: CGFloat, nodes: inout Set<T>) {

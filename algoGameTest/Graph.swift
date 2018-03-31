@@ -11,7 +11,8 @@ import Foundation
 protocol UpdateGraphStatusDelegate {
     func updateVertexPosition(at: Int)
     func updateExplored(at: Int)
-    func updateDijkstraLabel(at: Int, value: Double)
+    func updateDijkstraLabel(at: Int, value: Double, fromValue: Double)
+    func updateDataStructure(at: Int, mode: Int)
 }
 
 public class Edge<T>: Equatable where T: Hashable {
@@ -515,6 +516,7 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
             vertices[i].prev = nil
             vertices[i].dist = Double.infinity
             q.insert(vertices[i])
+            delegate?.updateDataStructure(at: vertices[i].index, mode: 1)
         }
         
         source.dist = 0 // distance from source to source
@@ -525,6 +527,7 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
         while !q.isEmpty {
             let ut = q.min {$0.dist < $1.dist }// vertex with min dist , remove
             q.remove(ut!)
+            delegate?.updateDataStructure(at: ut!.index, mode: 0)
             if let u = ut {
                 for e in edgesFrom(sourceVertex: u) {
                     var v = e.to
@@ -537,6 +540,7 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
                     if alt < v.dist {
                         v.dist = alt
                         v.prev = u
+                        delegate?.updateDijkstraLabel(at: v.index, value: alt, fromValue: e.weight!)
                     }
                 }
             }

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		C3287C62206F34260073A9D6 /* CurrentContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3287C61206F34260073A9D6 /* CurrentContainer.swift */; };
 		C3287C64206F344F0073A9D6 /* ScoreArithmeticHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3287C63206F344F0073A9D6 /* ScoreArithmeticHUD.swift */; };
+		C3287C66206F3F660073A9D6 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3287C65206F3F660073A9D6 /* TutorialViewController.swift */; };
+		C3287C68206FB8C90073A9D6 /* UnderlineLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3287C67206FB8C90073A9D6 /* UnderlineLabel.swift */; };
 		C32C2DB620696CA400A5F418 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C2DB520696CA400A5F418 /* Theme.swift */; };
 		C32C2DB820696D0000A5F418 /* ConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C2DB720696D0000A5F418 /* ConsoleView.swift */; };
 		C32C2DBA2069790D00A5F418 /* FlatButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C2DB92069790D00A5F418 /* FlatButton.swift */; };
@@ -43,6 +45,8 @@
 /* Begin PBXFileReference section */
 		C3287C61206F34260073A9D6 /* CurrentContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentContainer.swift; sourceTree = "<group>"; };
 		C3287C63206F344F0073A9D6 /* ScoreArithmeticHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreArithmeticHUD.swift; sourceTree = "<group>"; };
+		C3287C65206F3F660073A9D6 /* TutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialViewController.swift; sourceTree = "<group>"; };
+		C3287C67206FB8C90073A9D6 /* UnderlineLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlineLabel.swift; sourceTree = "<group>"; };
 		C32C2DB520696CA400A5F418 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		C32C2DB720696D0000A5F418 /* ConsoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleView.swift; sourceTree = "<group>"; };
 		C32C2DB92069790D00A5F418 /* FlatButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlatButton.swift; sourceTree = "<group>"; };
@@ -114,6 +118,7 @@
 				C32C2DC7206AEA8E00A5F418 /* Sort.swift */,
 				C3B2A0A5206E65980013A8EF /* BarViewController.swift */,
 				C395718A206E966900993BC3 /* CodeVisualizer.swift */,
+				C3287C65206F3F660073A9D6 /* TutorialViewController.swift */,
 				C32C2DC9206B459400A5F418 /* OutputTracer.swift */,
 				C3EAFF6F206C29720033CB89 /* UIElements */,
 				C3EAFF6B206C1E000033CB89 /* ForceDirectedGraph */,
@@ -144,6 +149,7 @@
 				C32C2DC3206AC37700A5F418 /* Utils.swift */,
 				C32E30E5206945F600D55114 /* UIBezierPath+Extension.swift */,
 				C3B2A0A7206E67DB0013A8EF /* Collection+Shuffle.swift */,
+				C3287C67206FB8C90073A9D6 /* UnderlineLabel.swift */,
 				C395718C206E972B00993BC3 /* CodeString.swift */,
 				C32C2DB520696CA400A5F418 /* Theme.swift */,
 				C3690243206C86AD00367606 /* CGMutablePath+addArrowLine.swift */,
@@ -252,7 +258,9 @@
 				C3690248206D1E7300367606 /* GraphViewController.swift in Sources */,
 				C32E30D42069437D00D55114 /* ViewController.swift in Sources */,
 				C32C2DC2206A9DC500A5F418 /* Graph.swift in Sources */,
+				C3287C68206FB8C90073A9D6 /* UnderlineLabel.swift in Sources */,
 				C3B2A0A2206DE3250013A8EF /* BarView.swift in Sources */,
+				C3287C66206F3F660073A9D6 /* TutorialViewController.swift in Sources */,
 				C32E30D22069437D00D55114 /* AppDelegate.swift in Sources */,
 				C3B2A0A8206E67DB0013A8EF /* Collection+Shuffle.swift in Sources */,
 				C3690246206D175700367606 /* ForceDirectedGraph.swift in Sources */,

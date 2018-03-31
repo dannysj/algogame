@@ -55,12 +55,22 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
     } ()
     
     private var buttonSideLength: CGFloat = 80.0
+    
+    // Other UI elements
     private lazy var flatButton: FlatButton = {
         let buttonRect = CGRect(x: 0, y: 0, width: buttonSideLength, height: buttonSideLength)
         let button = FlatButton(frame: buttonRect)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+    private var containerHeight: CGFloat = 200 {
+        didSet {
+            container.heightAnchor.constraint(equalToConstant: containerHeight).isActive = true
+        }
+    }
+    private var container: CurrentContainer!
+    
+    private var gameLabel: UILabel!
     
     private var currentBotNode: Int = 0
     private var nodeSize: CGFloat = 30
@@ -79,8 +89,7 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
         
         // Do any additional setup after loading the view.
         //setupGraphWithNodes()
-        let tapGR = UITapGestureRecognizer(target: self, action: #selector(randomTest))
-        view.addGestureRecognizer(tapGR)
+
         botOffset = nodeSize / 2.0
         // FIXME: Code type
         codeType = .dijkstra
@@ -118,10 +127,45 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
             flatButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -30)
             ])
         
-        flatButton.initType(type: .Ok)
+        flatButton.initType(type: .Alert)
         
         let tapGR = UITapGestureRecognizer(target: self, action: #selector(runAlgorithm))
         flatButton.addGestureRecognizer(tapGR)
+        
+        // debug
+        gameLabel = UILabel()
+        gameLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(gameLabel)
+        
+        NSLayoutConstraint.activate([
+            gameLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 30),
+            gameLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
+            gameLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30)
+            ])
+        
+        gameLabel.text = "\(graph.vertices.count)"
+        gameLabel.font = Theme.codeTitleFont()
+        gameLabel.textAlignment = .center
+        gameLabel.textColor = Theme.lineColor()
+        
+        //
+
+        
+        
+        switch codeType {
+     
+            case .dfsnonlexi:
+                container.initType(type: .Stack)
+            case .bfs:
+                container.initType(type: .Queue)
+            case .dijkstra:
+                container.initType(type: .PriorityQueue)
+            
+            default:
+                // do nth
+                break
+        }
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -136,10 +180,25 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
         }
     }
     
+    func setupContainer() {
+        //setup container
+        container = CurrentContainer(frame: CGRect(x: 0, y: 0, width: 50, height: containerHeight))
+        
+        container.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(container)
+        NSLayoutConstraint.activate([
+            container.topAnchor.constraint(equalTo: gameLabel.bottomAnchor, constant: 15),
+            container.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -15),
+            
+            container.widthAnchor.constraint(equalToConstant: 50)
+            ])
+    }
+    
     func randomSetupGraph() -> Bool {
         graph = AdjacencyListGraph<String>()
         graph.delegate = self
         let nodeCount = random(min: minNodeCount, max: maxNodeCount)
+        containerHeight = CGFloat(nodeCount * 25 + 35)
         
         var unconnected: [Int] = []
         _ = graph.createVertex("\(0)")
@@ -227,14 +286,17 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
                     fatalError()
                 }
                  let dis = CGFloat(e.weight!)
-                 system.link(from: nodes[aIndex], to: nodes[bIndex], distance: dis)
+                
 
                 if codeType == .dijkstra {
        
                     let n = node(color: UIColor.clear, diameter: nodeSize, fixed: false, isWeight: true, distance: dis)
-                    
-                    system.link(from: n, to: nodes[aIndex], distance: dis / 2.0 - nodeSize / 2.0, strength: nil, transparent: true)
-                    system.link(from: n, to: nodes[bIndex], distance: dis / 2.0 - nodeSize / 2.0, strength: nil, transparent: true)
+                    let firstHalfLength: CGFloat = nodeSize / 3.0
+                    system.link(from: n, to: nodes[aIndex], distance: dis / 2.0 - firstHalfLength, strength: nil, transparent: false, halfway: true)
+                    system.link(from: n, to: nodes[bIndex], distance: dis / 2.0 - firstHalfLength, strength: nil)
+                }
+                else {
+                     system.link(from: nodes[aIndex], to: nodes[bIndex], distance: dis)
                 }
             }
             else {
@@ -248,21 +310,7 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
         system.link(from: botNode, to: nodes[0], distance: botOffset, transparent: true)
         currentBotNode = 0
         
-        // debug
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(label)
-        
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 30),
-            label.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
-            label.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30)
-            ])
-        
-        label.text = "\(graph.vertices.count)"
-        label.font = Theme.codeTitleFont()
-        label.textAlignment = .center
-        label.textColor = Theme.lineColor()
+
         
         // success
         return true
@@ -349,7 +397,7 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
                 label.font = Theme.codeFont() 
                 label.textColor = UIColor.white
                 label.textAlignment = .center
-                label.text = "∞"
+                label.attributedText = NSAttributedString(string: "∞")
                 label.translatesAutoresizingMaskIntoConstraints = false
                 view.addSubview(label)
                 NSLayoutConstraint.activate([
@@ -467,6 +515,7 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
 
             if n.hashValue == nodesLoc[at] {
                 node = n
+                break
             }
 
         }
@@ -479,8 +528,82 @@ class ViewController: UIViewController, UpdateGraphStatusDelegate {
         sleep(1)
     }
     
-    func updateDijkstraLabel(at: Int, value: Double) {
+    func updateDijkstraLabel(at: Int, value: Double, fromValue: Double) {
         print("Hmm")
+        var node: ViewNode? = nil
+        
+        for n in forceDirectedGraph.nodes {
+            
+            if n.hashValue == nodesLoc[at] {
+                node = n
+                break
+            }
+            
+        }
+        if let n = node {
+            if let textLabel = n.view.takeUnretainedValue().subviews[0] as? UILabel {
+                
+                let attr: [NSAttributedStringKey : Any] = [ NSAttributedStringKey.foregroundColor: UIColor.white, NSAttributedStringKey.font:UIFont(name: "Menlo-Regular", size: 5) ]
+                
+                let attributedTextSmall = NSMutableAttributedString(string: "\(fromValue)->\n", attributes: attr)
+                
+                let attr1: [NSAttributedStringKey : Any] = [ NSAttributedStringKey.foregroundColor: UIColor.white, NSAttributedStringKey.font:UIFont(name: "Menlo-Regular", size: 8) ]
+                
+                let attributedText = NSMutableAttributedString(string: "\(value)", attributes: attr1)
+                attributedTextSmall.append(attributedText)
+                
+                
+                main.async {
+                    textLabel.textAlignment = .center
+                    textLabel.numberOfLines = 0
+                    textLabel.attributedText = attributedTextSmall
+                    self.container.updateLabel(index: at, string: attributedTextSmall.string)
+                }
+                
+            }
+        }
+        
+    }
+    
+    func updateDataStructure(at: Int, mode: Int) {
+        var node: ViewNode? = nil
+        
+        for n in forceDirectedGraph.nodes {
+            
+            if n.hashValue == nodesLoc[at] {
+                node = n
+                break
+            }
+            
+        }
+        if let n = node {
+            //main.async {
+                let test = n.view.takeUnretainedValue().layer.sublayers![0] as! CAShapeLayer
+                var text = ""
+                if let textLabel = n.view.takeUnretainedValue().subviews[0] as? UILabel {
+                    text = (textLabel.attributedText?.string)!
+                    
+                }
+            print("Text obtained: \(text)")
+                if mode == 1 {
+                    
+                    self.main.sync {
+                        self.container.add(pair: (at, test.fillColor!, text))
+                    }
+                }
+                else {
+                    // remove
+                    self.main.sync {
+                        self.container.remove(index: at)
+                    }
+                }
+
+                print("Text is \(text)")
+          //  }
+
+        }
+
+
     }
 }
 

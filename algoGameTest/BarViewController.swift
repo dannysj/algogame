@@ -99,8 +99,6 @@ class BarViewController: UIViewController, UpdateLeakyStatusDelegate {
         let buttonTap = UITapGestureRecognizer(target: self, action: #selector(testStart))
         flatButton.addGestureRecognizer(buttonTap)
         
-        let tapGR = UITapGestureRecognizer(target: self, action: #selector(randomTest))
-        view.addGestureRecognizer(tapGR)
         
         barView.pointer(at: 2)
     
