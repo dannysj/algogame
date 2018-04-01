@@ -130,7 +130,7 @@ class StatusViewController: UIViewController, UIViewControllerTransitioningDeleg
             subTitleLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
             subTitleLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
             subTitleLabel.heightAnchor.constraint(equalToConstant: 40),
-            subTitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15)
+            subTitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0)
             ])
         
         subTitleLabel.text = "Better luck next time!"
@@ -153,7 +153,7 @@ class StatusViewController: UIViewController, UIViewControllerTransitioningDeleg
             buttonDesLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             buttonDesLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
             buttonDesLabel.heightAnchor.constraint(equalToConstant: 40),
-            buttonDesLabel.bottomAnchor.constraint(equalTo: flatButton.topAnchor, constant: -15)
+            buttonDesLabel.bottomAnchor.constraint(equalTo: flatButton.topAnchor, constant: -10)
             ])
         
         buttonDesLabel.text = "Restart game"

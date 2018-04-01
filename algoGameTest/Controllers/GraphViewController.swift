@@ -189,6 +189,7 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
             print("Timer is valid")
             timer.invalidate()
         }
+        
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerRunning), userInfo: nil, repeats: true)
         print("Activated timer")
         circleProgress.animate(toValue: timeLimit)
