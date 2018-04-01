@@ -8,9 +8,11 @@
 
 import UIKit
 
-class TracerViewController: UIViewController {
+class TracerViewController: UIViewController, UIViewControllerTransitioningDelegate {
+    // for transition
+    let transition = BotFadeTransition()
     private var timer: Timer = Timer()
-    private var timeLimit: Double = 5 
+    private var timeLimit: Double = 10
     private var currentTime: Double = 0
     private var height: CGFloat = UIScreen.main.bounds.height * 0.4
     private var codeVHeight: CGFloat = 0
@@ -74,7 +76,6 @@ class TracerViewController: UIViewController {
         // Do any additional setup after loading the view.
         codeVHeight = UIScreen.main.bounds.height - height - buttonSideLength - 60
         self.view.backgroundColor = Theme.backgroundColor()
-        codeType = .trace1
         setupScreen()
     }
     
@@ -98,6 +99,12 @@ class TracerViewController: UIViewController {
         
         if (currentTime == timeLimit) {
             print("5 seconds")
+            if isLeaky {
+                let statusVC = StatusViewController()
+                statusVC.updateStatus(status: .Failed)
+                self.present(statusVC, animated: false, completion: nil)
+                
+            }
         }
     }
     
@@ -233,14 +240,20 @@ class TracerViewController: UIViewController {
     }
     
 
-    /*
     // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        //transition.mode = .dismiss
+        transition.color = Theme.backgroundColor()
+        
+        return transition
     }
-    */
+    
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        //transition.mode = .present
+        transition.color = Theme.backgroundColor()
+        
+        return transition
+    }
 
 }

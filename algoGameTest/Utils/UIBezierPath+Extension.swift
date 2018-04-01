@@ -84,9 +84,9 @@ extension UIBezierPath {
         
         self.lineWidth = lineWidth           // in case we're going to use CoreGraphics to stroke path, rather than CAShapeLayer
         lineJoinStyle = .round
-        
-        let center = CGPoint(x: rect.midX, y: rect.midY)
         /*
+        let center = CGPoint(x: rect.midX, y: rect.midY)
+        
         if sides == 6 {
         
             self.apply(CGAffineTransform(translationX: center.x, y: center.y).inverted())

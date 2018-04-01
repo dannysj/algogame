@@ -8,7 +8,10 @@
 
 import UIKit
 
-class GraphViewController: UIViewController, UpdateGraphStatusDelegate {
+class GraphViewController: UIViewController, UIViewControllerTransitioningDelegate, UpdateGraphStatusDelegate {
+    // for transition
+    let transition = BotFadeTransition()
+    
     // graph data structure
     private var graph: AdjacencyListGraph<String>!
     private let maxNodeCount: Int = 10
@@ -24,6 +27,9 @@ class GraphViewController: UIViewController, UpdateGraphStatusDelegate {
     private let main = DispatchQueue.main
     private let global = DispatchQueue.global()
     
+    //leaky
+    private var isLeaky: Bool = true
+    
     // graph
     fileprivate lazy var forceDirectedGraph: ForceDirectedGraph<ViewNode> = {
         let fdg: ForceDirectedGraph<ViewNode> = ForceDirectedGraph()
@@ -35,6 +41,11 @@ class GraphViewController: UIViewController, UpdateGraphStatusDelegate {
         return fdg
     } ()
     
+    // timer
+    private var timer: Timer = Timer()
+    private var timeLimit: Double = 5
+    private var currentTime: Double = 0
+    private var circleProgress: CircularProgress!
     private lazy var bot: HexagonBot = {
         let b = HexagonBot()
         b.bounds = CGRect(x: 0, y: 0, width: 40, height: 50)
@@ -60,6 +71,7 @@ class GraphViewController: UIViewController, UpdateGraphStatusDelegate {
     private lazy var flatButton: FlatButton = {
         let buttonRect = CGRect(x: 0, y: 0, width: buttonSideLength, height: buttonSideLength)
         let button = FlatButton(frame: buttonRect)
+        button.center = CGPoint(x: self.view.bounds.width / 2 , y: self.view.bounds.height - 30 - buttonSideLength / 2.0)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -87,8 +99,7 @@ class GraphViewController: UIViewController, UpdateGraphStatusDelegate {
         //setupGraphWithNodes()
 
         botOffset = nodeSize / 2.0
-        // FIXME: Code type
-        codeType = .dijkstra
+
         // Bad way to
        
         setupGraph()
@@ -100,6 +111,7 @@ class GraphViewController: UIViewController, UpdateGraphStatusDelegate {
         super.viewDidAppear(animated)
         //updateBotLocation(nodeIndex: 0)
         forceDirectedGraph.start()
+        activateTimer()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -127,6 +139,12 @@ class GraphViewController: UIViewController, UpdateGraphStatusDelegate {
             ])
         
         flatButton.initType(type: .Alert)
+        
+        // some timer
+        circleProgress = CircularProgress()
+        
+        view.layer.addSublayer(circleProgress)
+        circleProgress.initialize(point: flatButton.center, radius: (buttonSideLength + 15) / 2, lineWidth: 4)
         
         let tapGR = UITapGestureRecognizer(target: self, action: #selector(runAlgorithm))
         flatButton.addGestureRecognizer(tapGR)
@@ -166,6 +184,31 @@ class GraphViewController: UIViewController, UpdateGraphStatusDelegate {
         
     }
 
+    func activateTimer() {
+        if timer.isValid {
+            print("Timer is valid")
+            timer.invalidate()
+        }
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerRunning), userInfo: nil, repeats: true)
+        print("Activated timer")
+        circleProgress.animate(toValue: timeLimit)
+    }
+    
+    @objc func timerRunning() {
+        currentTime += 1
+        
+        if (currentTime == timeLimit) {
+            print("5 seconds")
+            if isLeaky {
+                let statusVC = StatusViewController()
+                statusVC.updateStatus(status: .Failed)
+
+                self.present(statusVC, animated: false, completion: nil)
+                
+            }
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -176,6 +219,9 @@ class GraphViewController: UIViewController, UpdateGraphStatusDelegate {
         while !success {
             success = randomSetupGraph()
         }
+    }
+    func initCodeType(type: CodeType) {
+        self.codeType = type
     }
     
     func setupContainer() {
@@ -484,11 +530,11 @@ class GraphViewController: UIViewController, UpdateGraphStatusDelegate {
             global.async {
                 switch self.codeType {
                     case .dfslexi:
-                        self.graph.dfs_lexi(source: s)
+                        _ = self.graph.dfs_lexi(source: s)
                     case .dfsnonlexi:
-                        self.graph.dfs_nonlexi(source: s)
+                        _ = self.graph.dfs_nonlexi(source: s)
                     case .bfs:
-                        self.graph.bfs(source: s)
+                        _ = self.graph.bfs(source: s)
                     case .dijkstra:
                         self.graph.dijkstra(source: s)
 
@@ -604,6 +650,21 @@ class GraphViewController: UIViewController, UpdateGraphStatusDelegate {
         }
 
 
+    }
+    // MARK: - Navigation
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        //transition.mode = .dismiss
+        transition.color = Theme.backgroundColor()
+        
+        return transition
+    }
+    
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        //transition.mode = .present
+        transition.color = Theme.backgroundColor()
+        
+        return transition
     }
 }
 

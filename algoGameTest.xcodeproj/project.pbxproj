@@ -10,6 +10,8 @@
 		C3143947206FEE7F002409C8 /* StatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3143946206FEE7F002409C8 /* StatusViewController.swift */; };
 		C3143949206FFC9E002409C8 /* TracerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3143948206FFC9E002409C8 /* TracerViewController.swift */; };
 		C314394D207040F4002409C8 /* String+HeightExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C314394C207040F4002409C8 /* String+HeightExtension.swift */; };
+		C314394F20705638002409C8 /* CircularTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = C314394E20705638002409C8 /* CircularTransition.swift */; };
+		C314395120705A66002409C8 /* BotFadeTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = C314395020705A66002409C8 /* BotFadeTransition.swift */; };
 		C3287C62206F34260073A9D6 /* CurrentContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3287C61206F34260073A9D6 /* CurrentContainer.swift */; };
 		C3287C64206F344F0073A9D6 /* ScoreArithmeticHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3287C63206F344F0073A9D6 /* ScoreArithmeticHUD.swift */; };
 		C3287C66206F3F660073A9D6 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3287C65206F3F660073A9D6 /* TutorialViewController.swift */; };
@@ -49,6 +51,8 @@
 		C3143946206FEE7F002409C8 /* StatusViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusViewController.swift; sourceTree = "<group>"; };
 		C3143948206FFC9E002409C8 /* TracerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracerViewController.swift; sourceTree = "<group>"; };
 		C314394C207040F4002409C8 /* String+HeightExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HeightExtension.swift"; sourceTree = "<group>"; };
+		C314394E20705638002409C8 /* CircularTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularTransition.swift; sourceTree = "<group>"; };
+		C314395020705A66002409C8 /* BotFadeTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BotFadeTransition.swift; sourceTree = "<group>"; };
 		C3287C61206F34260073A9D6 /* CurrentContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentContainer.swift; sourceTree = "<group>"; };
 		C3287C63206F344F0073A9D6 /* ScoreArithmeticHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreArithmeticHUD.swift; sourceTree = "<group>"; };
 		C3287C65206F3F660073A9D6 /* TutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialViewController.swift; sourceTree = "<group>"; };
@@ -168,6 +172,8 @@
 			children = (
 				C32C2DC3206AC37700A5F418 /* Utils.swift */,
 				C32E30E5206945F600D55114 /* UIBezierPath+Extension.swift */,
+				C314394E20705638002409C8 /* CircularTransition.swift */,
+				C314395020705A66002409C8 /* BotFadeTransition.swift */,
 				C3B2A0A7206E67DB0013A8EF /* Collection+Shuffle.swift */,
 				C3287C67206FB8C90073A9D6 /* UnderlineLabel.swift */,
 				C395718C206E972B00993BC3 /* CodeString.swift */,
@@ -284,6 +290,7 @@
 				C32E30D42069437D00D55114 /* ViewController.swift in Sources */,
 				C32C2DC2206A9DC500A5F418 /* Graph.swift in Sources */,
 				C3287C68206FB8C90073A9D6 /* UnderlineLabel.swift in Sources */,
+				C314395120705A66002409C8 /* BotFadeTransition.swift in Sources */,
 				C3B2A0A2206DE3250013A8EF /* BarView.swift in Sources */,
 				C3287C66206F3F660073A9D6 /* TutorialViewController.swift in Sources */,
 				C32E30D22069437D00D55114 /* AppDelegate.swift in Sources */,
@@ -295,6 +302,7 @@
 				C32E30E7206945F700D55114 /* UIBezierPath+Extension.swift in Sources */,
 				C3EAFF6D206C22F80033CB89 /* System+Links.swift in Sources */,
 				C3EAFF68206C134D0033CB89 /* Particles+View.swift in Sources */,
+				C314394F20705638002409C8 /* CircularTransition.swift in Sources */,
 				C3EAFF66206C11CA0033CB89 /* QuadTree.swift in Sources */,
 				C32C2DB620696CA400A5F418 /* Theme.swift in Sources */,
 				C32C2DC4206AC37700A5F418 /* Utils.swift in Sources */,

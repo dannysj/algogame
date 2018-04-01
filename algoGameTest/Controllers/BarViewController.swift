@@ -8,16 +8,24 @@
 
 import UIKit
 
-class BarViewController: UIViewController, UpdateLeakyStatusDelegate {
+class BarViewController: UIViewController, UIViewControllerTransitioningDelegate, UpdateLeakyStatusDelegate {
+    // for transition
+    let transition = BotFadeTransition()
+    // timer
+    private var timer: Timer = Timer()
+    private var timeLimit: Double = 5
+    private var currentTime: Double = 0
     // keep track error
     private var leakyStatus: Bool = false
     private var minBarCount: Int = 8
     private var maxBarCount: Int = 16
+    private var circleProgress: CircularProgress!
     var barData: [Int] = []
     var barCount: Int = 0
     var barCounter: Int = 0
     private var barViewHeight: CGFloat = UIScreen.main.bounds.height / 3
     private var codeVHeight: CGFloat = 0
+    private var isLeaky: Bool = true
     
     // private lazy var
     private lazy var barView: BarView = {
@@ -39,6 +47,7 @@ class BarViewController: UIViewController, UpdateLeakyStatusDelegate {
     private lazy var flatButton: FlatButton = {
         let buttonRect = CGRect(x: 0, y: 0, width: buttonSideLength, height: buttonSideLength)
         let button = FlatButton(frame: buttonRect)
+        button.center = CGPoint(x: self.view.bounds.width / 2 , y: self.view.bounds.height - 30 - buttonSideLength / 2.0)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -53,10 +62,44 @@ class BarViewController: UIViewController, UpdateLeakyStatusDelegate {
         self.view.backgroundColor = Theme.backgroundColor()
         // Do any additional setup after loading the view.
         codeVHeight = UIScreen.main.bounds.height - barViewHeight - buttonSideLength - 60
-        // codeType
-        codeType = .quickSort
+
         initBarView()
 
+    }
+    
+    
+    func initCodeType(type: CodeType) {
+        self.codeType = type
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        activateTimer()
+    }
+    
+    func activateTimer() {
+        if timer.isValid {
+            print("Timer is valid")
+            timer.invalidate()
+        }
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerRunning), userInfo: nil, repeats: true)
+        print("Activated timer")
+        circleProgress.animate(toValue: timeLimit)
+    }
+    
+    @objc func timerRunning() {
+        currentTime += 1
+        
+        if (currentTime == timeLimit) {
+            print("5 seconds")
+            if isLeaky {
+                let statusVC = StatusViewController()
+                statusVC.updateStatus(status: .Failed)
+
+                self.present(statusVC, animated: false, completion: nil)
+                
+            }
+        }
     }
     
     func initBarView() {
@@ -100,6 +143,11 @@ class BarViewController: UIViewController, UpdateLeakyStatusDelegate {
         let buttonTap = UITapGestureRecognizer(target: self, action: #selector(testStart))
         flatButton.addGestureRecognizer(buttonTap)
         
+        // some timer
+        circleProgress = CircularProgress()
+        
+        view.layer.addSublayer(circleProgress)
+        circleProgress.initialize(point: flatButton.center, radius: (buttonSideLength + 15) / 2, lineWidth: 4)
         
         barView.pointer(at: 2)
     
@@ -242,5 +290,19 @@ class BarViewController: UIViewController, UpdateLeakyStatusDelegate {
         }
         sleep(time)
     }
-
+    // MARK: - Navigation
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        //transition.mode = .dismiss
+        transition.color = Theme.backgroundColor()
+        
+        return transition
+    }
+    
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        //transition.mode = .present
+        transition.color = Theme.backgroundColor()
+        
+        return transition
+    }
 }

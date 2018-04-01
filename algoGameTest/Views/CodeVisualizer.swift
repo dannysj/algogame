@@ -43,7 +43,7 @@ class CodeVisualizer: UIView {
 
 }
 
-enum CodeType {
+enum CodeType: UInt32 {
     case dfslexi
     case dfsnonlexi
     case bfs
@@ -95,5 +95,20 @@ enum CodeType {
             return "Insertion Sort"
             
         }
+    }
+    
+    private static let _count: CodeType.RawValue = {
+        var maxValue: UInt32 = 0
+        while let _ = CodeType(rawValue: maxValue) {
+            maxValue += 1
+        }
+        return maxValue
+    }()
+    
+    
+    static func randomCode() -> CodeType {
+        // pick and return one
+        let rand = arc4random_uniform(_count)
+        return CodeType(rawValue: rand)!
     }
 }

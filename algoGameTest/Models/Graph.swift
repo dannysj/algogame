@@ -19,7 +19,7 @@ public class Edge<T>: Equatable where T: Hashable {
     public let from: Vertex<T>
     public let to: Vertex<T>
     
-    public let weight: Double?
+    public var weight: Double?
     
     public init(from: Vertex<T>, to: Vertex<T>, weight: Double) {
         self.from = from
@@ -341,6 +341,13 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
             
         }
         else {
+            
+            for var et in edgeList.edges! {
+                if et.from == from && et.to == to {
+                    return
+                }
+            }
+            
             edgeList.addEdge(e)
         }
     }
@@ -480,7 +487,7 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
         s.put(source)
 
         while !s.isEmpty {
-            var v = s.pop()
+            let v = s.pop()
             if !visited.contains(v!) {
                 let vIndex = visited.count
                 
@@ -530,7 +537,7 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
             delegate?.updateDataStructure(at: ut!.index, mode: 0)
             if let u = ut {
                 for e in edgesFrom(sourceVertex: u) {
-                    var v = e.to
+                    let v = e.to
                     let alt = u.dist + e.weight!
                     delegate?.updateExplored(at: v.index)
                     delegate?.updateVertexPosition(at: v.index)

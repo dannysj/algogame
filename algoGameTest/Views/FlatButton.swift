@@ -22,6 +22,7 @@ class FlatButton: UIView {
     var sideColor: CGColor = UIColor.FlatColor.Green.mintDark.cgColor
     var offset: CGFloat = 0
     var buttonType: ButtonType!
+    var label: UILabel!
     
     func initType(type: ButtonType) {
         self.buttonType = type
@@ -67,7 +68,7 @@ class FlatButton: UIView {
     }
     
     func addText(text: String) {
-        let label = UILabel()
+         label = UILabel()
         
         switch buttonType {
             case .Alert:
@@ -80,7 +81,7 @@ class FlatButton: UIView {
                 label.textColor = UIColor.white
                 label.font = UIFont(name: "Menlo-Regular", size: 35)
             case .Close:
-                label.textColor = UIColor.clear
+                label.textColor = UIColor.FlatColor.Red.grapeFruit
                 label.font = UIFont(name: "Menlo-Bold", size: 40)
             default:
                 fatalError()
@@ -99,9 +100,23 @@ class FlatButton: UIView {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch = touches.first
-        
-        guard let point = touch?.location(in: self) else { return }
-        guard let sublayers = self.layer.sublayers as? [CAShapeLayer] else { return }
+        print("Detected")
+        guard let point = touch?.location(in: self) else {
+            // maybe it is in label
+            guard let point2 = touch?.location(in: label) else { return }
+            animate()
+            /*guard let sublayers = self.layer.sublayers as? [CAShapeLayer] else { return }
+            for layer in sublayers{
+                if let path = layer.path {
+                    print(layer)
+                    print("Touched!")
+                    animate()
+                }
+            } */
+            return
+        }
+        animate()
+/*        guard let sublayers = self.layer.sublayers as? [CAShapeLayer] else { return }
         
         for layer in sublayers{
             if let path = layer.path, path.contains(point) {
@@ -110,6 +125,7 @@ class FlatButton: UIView {
                 animate()
             }
         }
+ */
     }
     
     func animate() {

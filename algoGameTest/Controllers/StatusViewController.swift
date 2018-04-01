@@ -14,8 +14,9 @@ enum GameStatus {
     case Failed
 }
 
-class StatusViewController: UIViewController {
-    
+class StatusViewController: UIViewController, UIViewControllerTransitioningDelegate {
+    // for transition
+    let transition = BotFadeTransition()
     private var status: GameStatus! {
         didSet {
             switch status {
@@ -47,6 +48,7 @@ class StatusViewController: UIViewController {
         l.translatesAutoresizingMaskIntoConstraints = false
         l.font = Theme.scoreFont()
         l.textColor = UIColor.white
+        l.textAlignment = .center
         l.numberOfLines = 0
         return l
     }()
@@ -57,6 +59,7 @@ class StatusViewController: UIViewController {
         l.font = Theme.codeFont()
         l.textColor = UIColor.white
         l.numberOfLines = 0
+         l.textAlignment = .center
         return l
     }()
     
@@ -66,6 +69,17 @@ class StatusViewController: UIViewController {
         l.font = Theme.codeLargerFont()
         l.textColor = UIColor.white
         l.numberOfLines = 0
+         l.textAlignment = .center
+        return l
+    }()
+    
+    private lazy var buttonDesLabel: UILabel = {
+        let l = UILabel()
+        l.translatesAutoresizingMaskIntoConstraints = false
+        l.font = Theme.codeLargerFont()
+        l.textColor = UIColor.white
+        l.numberOfLines = 0
+        l.textAlignment = .center
         return l
     }()
 
@@ -104,7 +118,8 @@ class StatusViewController: UIViewController {
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
             titleLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
-            titleLabel.heightAnchor.constraint(equalToConstant: 40)
+            titleLabel.heightAnchor.constraint(equalToConstant: 40),
+            titleLabel.bottomAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -45)
             ])
         
         titleLabel.center = self.view.center
@@ -115,7 +130,7 @@ class StatusViewController: UIViewController {
             subTitleLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
             subTitleLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
             subTitleLabel.heightAnchor.constraint(equalToConstant: 40),
-            subTitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 30)
+            subTitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15)
             ])
         
         subTitleLabel.text = "Better luck next time!"
@@ -125,12 +140,23 @@ class StatusViewController: UIViewController {
             scoreLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             scoreLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
             scoreLabel.heightAnchor.constraint(equalToConstant: 40),
-            scoreLabel.topAnchor.constraint(equalTo: subTitleLabel.bottomAnchor, constant: 50)
+            scoreLabel.topAnchor.constraint(equalTo: subTitleLabel.bottomAnchor, constant: 40)
             ])
         
         scoreLabel.text = "You scored \(self.score)"
         
         addCloseButton()
+        
+        // FIXME:
+        self.view.addSubview(buttonDesLabel)
+        NSLayoutConstraint.activate([
+            buttonDesLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            buttonDesLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+            buttonDesLabel.heightAnchor.constraint(equalToConstant: 40),
+            buttonDesLabel.bottomAnchor.constraint(equalTo: flatButton.topAnchor, constant: -15)
+            ])
+        
+        buttonDesLabel.text = "Restart game"
         
     }
     
@@ -171,5 +197,19 @@ class StatusViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        //transition.mode = .dismiss
+        transition.color = Theme.backgroundColor()
+        
+        return transition
+    }
+    
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        //transition.mode = .present
+        transition.color = Theme.backgroundColor()
+        
+        return transition
+    }
 
 }
