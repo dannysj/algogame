@@ -101,7 +101,7 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
         botOffset = nodeSize / 2.0
 
         // Bad way to
-       
+       codeType = .bfs
         setupGraph()
         setupView()
     }
@@ -165,7 +165,9 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
         gameLabel.textAlignment = .center
         gameLabel.textColor = Theme.lineColor()
         
-        setupContainer()
+        if codeType != .dfslexi {
+            setupContainer()
+        }
         //
         switch codeType {
      
@@ -198,6 +200,7 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
     @objc func timerRunning() {
         currentTime += 1
         
+        /*
         if (currentTime == timeLimit) {
             print("5 seconds")
             if isLeaky {
@@ -208,12 +211,9 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
                 
             }
         }
+ */
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
     func setupGraph() {
         var success:Bool = randomSetupGraph()
@@ -338,7 +338,7 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
                 if codeType == .dijkstra {
        
                     let n = node(color: UIColor.clear, diameter: nodeSize, fixed: false, isWeight: true, distance: dis)
-                    let firstHalfLength: CGFloat = nodeSize / 3.0
+                    let firstHalfLength: CGFloat = nodeSize / 2.5
                     system.link(from: n, to: nodes[aIndex], distance: dis / 2.0 - firstHalfLength, strength: nil, transparent: false, halfway: true)
                     system.link(from: n, to: nodes[bIndex], distance: dis / 2.0 - firstHalfLength, strength: nil)
                 }
@@ -627,9 +627,12 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
             //main.async {
                 let test = n.view.takeUnretainedValue().layer.sublayers![0] as! CAShapeLayer
                 var text = ""
-                if let textLabel = n.view.takeUnretainedValue().subviews[0] as? UILabel {
-                    text = (textLabel.attributedText?.string)!
-                    
+                print("Before getting textLabel")
+                if self.codeType == .dijkstra {
+                    if let textLabel = n.view.takeUnretainedValue().subviews[0] as? UILabel {
+                        text = (textLabel.attributedText?.string)!
+                        
+                    }
                 }
             print("Text obtained: \(text)")
                 if mode == 1 {
@@ -638,7 +641,7 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
                         self.container.add(pair: (at, test.fillColor!, text))
                     }
                 }
-                else {
+                else if mode == 0{
                     // remove
                     self.main.sync {
                         self.container.remove(index: at)
@@ -646,9 +649,9 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
                 }
 
                 print("Text is \(text)")
-          //  }
+            }
 
-        }
+        //}
 
 
     }

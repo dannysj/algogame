@@ -12,7 +12,7 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
     // for transition
     let transition = BotFadeTransition()
     private var timer: Timer = Timer()
-    private var timeLimit: Double = 10
+    private var timeLimit: Double = 5
     private var currentTime: Double = 0
     private var height: CGFloat = UIScreen.main.bounds.height * 0.4
     private var codeVHeight: CGFloat = 0
@@ -22,7 +22,8 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
         c.translatesAutoresizingMaskIntoConstraints = false
         return c
     }()
-    
+    private let main = DispatchQueue.main
+    private let global = DispatchQueue.global()
     private lazy var codeVisualizer: CodeVisualizer = {
         let v = CodeVisualizer()
         v.bounds = CGRect(x: 0, y: 0, width: self.view.frame.width, height: codeVHeight)
@@ -65,7 +66,10 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
     private var isLeaky: Bool = false
     private var n:Int = 0 {
         didSet {
-            nLabel.text = "n = \(n)"
+            main.async {
+                self.nLabel.text = "n = \(self.n)"
+            }
+            
         }
     }
     
@@ -76,11 +80,13 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
         // Do any additional setup after loading the view.
         codeVHeight = UIScreen.main.bounds.height - height - buttonSideLength - 60
         self.view.backgroundColor = Theme.backgroundColor()
+        codeType = .trace2
         setupScreen()
     }
     
     func initCodeType(type: CodeType) {
         self.codeType = type
+        
     }
     
 
@@ -91,12 +97,13 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
         }
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerRunning), userInfo: nil, repeats: true)
         print("Activated timer")
+        
         circleProgress.animate(toValue: timeLimit)
     }
     
     @objc func timerRunning() {
         currentTime += 1
-        
+        print("Called")
         if (currentTime == timeLimit) {
             print("5 seconds")
             if isLeaky {
@@ -108,6 +115,12 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
         }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        runAlgorithm()
+        activateTimer()
+        codeVisualizer.showScroll()
+    }
     func setupScreen() {
         self.view.addSubview(gameLabel)
         NSLayoutConstraint.activate([
@@ -122,18 +135,21 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
             console.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
             console.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
             console.heightAnchor.constraint(equalToConstant: height),
-            console.topAnchor.constraint(equalTo: self.gameLabel.bottomAnchor, constant: 30)
+            console.topAnchor.constraint(equalTo: self.gameLabel.bottomAnchor, constant: 15)
             ])
-        
+        addButton()
         self.view.addSubview(codeVisualizer)
         NSLayoutConstraint.activate([
             codeVisualizer.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             codeVisualizer.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
             codeVisualizer.topAnchor.constraint(equalTo: console.bottomAnchor, constant: 15),
-            codeVisualizer.heightAnchor.constraint(equalToConstant: codeVHeight)
+            //codeVisualizer.heightAnchor.constraint(equalToConstant: codeVHeight),
+            codeVisualizer.bottomAnchor.constraint(equalTo: self.flatButton.topAnchor, constant: -15)
             ])
         
-        codeVisualizer.initCodeType(type: codeType)
+        print(codeType.name)
+        codeVisualizer.initCodeType(type: codeType, withScrollableWindow: true
+        )
         
         self.view.addSubview(nLabel)
         NSLayoutConstraint.activate([
@@ -142,7 +158,7 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
             nLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30)
             ])
         
-        addButton()
+        
         
         circleProgress = CircularProgress()
         
@@ -181,7 +197,7 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
     }
     
     func leakyTracingAlgorithm1() {
-        n = random(min: 5, max: 8)
+        n = random(min: 3, max: 8)
         for i in 1 ..< n+1 {
             var j = n
             var str = ""
@@ -193,13 +209,17 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
                 str += "*"
                 j -= 1
             }
-            print(str)
+            //print(str)
+            main.sync {
+                console.addOutputLine(str: str)
+            }
+            sleep(1)
             
         }
     }
     
     func leakyTracingAlgorithm2() {
-        n = random(min: 5, max: 8)
+        n = random(min: 8, max: 12)
         
         var k: Int = 0
         for i in 1 ..< n+1 {
@@ -214,6 +234,10 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
             }
             
             print(str)
+            main.sync {
+                console.addOutputLine(str: str)
+            }
+            sleep(1)
             
         }
         k = 1
@@ -231,15 +255,28 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
             }
             
             print(str)
+            main.sync {
+                console.addOutputLine(str: str)
+            }
+            sleep(1)
         }
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func runAlgorithm() {
+        print("Run called")
+        
+        global.async {
+            if self.codeType == .trace1 {
+                self.leakyTracingAlgorithm1()
+            }
+            else {
+                self.leakyTracingAlgorithm2()
+            }
+        }
+
+        
     }
     
-
     // MARK: - Navigation
     
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {

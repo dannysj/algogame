@@ -24,12 +24,13 @@ class OutputTracer: UIView {
         }
     }
 
-    private lazy var outputLabel: UILabel = {
-        let l = UILabel()
+    private lazy var outputLabel: UITextView = {
+        let l = UITextView()
         l.translatesAutoresizingMaskIntoConstraints = false
         l.font = Theme.codeFont()
         l.textColor = UIColor.white
-        l.numberOfLines = 0
+        l.isEditable = false
+        l.backgroundColor = UIColor.clear
         return l
     }()
     override func layoutSubviews() {
@@ -52,11 +53,15 @@ class OutputTracer: UIView {
         NSLayoutConstraint.activate([
             outputLabel.leadingAnchor.constraint(equalTo: consoleView.leadingAnchor, constant: 15),
             outputLabel.trailingAnchor.constraint(equalTo: consoleView.trailingAnchor, constant: -15),
-            outputLabel.topAnchor.constraint(equalTo: consoleView.topAnchor, constant: 15),
+            outputLabel.topAnchor.constraint(equalTo: consoleView.topAnchor, constant: 35),
             outputLabel.bottomAnchor.constraint(equalTo: consoleView.bottomAnchor, constant: -15)
             ])
+        //outputLabel.backgroundColor = UIColor.red
+        
         
     }
+    
+    //bot?
     
     func addOutputLine(str: String) {
         lines.append(str)
@@ -65,10 +70,17 @@ class OutputTracer: UIView {
     func updateOutput() {
         var str = ""
         for i in 0 ..< lines.count {
-            str += "\(i+1)  \(lines[i])\n"
+            str += "\(i+1)\t\t\(lines[i])\n"
             outputLabel.text = str
-            sleep(1)
+            //outputLabel.sizeToFit()
+            //sleep(1)
+            if lines.count > 0 {
+                
+                outputLabel.scrollRangeToVisible(outputLabel.selectedRange)
+                outputLabel.flashScrollIndicators()
+            }
         }
+
     }
     
 }

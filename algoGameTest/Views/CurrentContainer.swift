@@ -21,6 +21,7 @@ class CurrentContainer: UIView {
     private var arr: [Pairs] = [] {
         didSet {
             print("Updated")
+            arrange()
             updateStat()
         }
     }
@@ -67,6 +68,14 @@ class CurrentContainer: UIView {
         self.type = type
     }
     
+    public func arrange() {
+        if type == .PriorityQueue {
+            arr.sort(by: { $0.2 < $1.2 })
+        } else if type == .Stack {
+            arr.reverse()
+        }
+    }
+    
     public func add(pair:  Pairs) {
         arr.append(pair)
     }
@@ -83,6 +92,8 @@ class CurrentContainer: UIView {
             }
         }
         arr.remove(at: i)
+        print("Removing x")
+        print(x!)
         showRemovedItem(x!)
     }
     
@@ -102,12 +113,15 @@ class CurrentContainer: UIView {
         let v = node(color: pair.1, diameter: 30, text: pair.2)
         v.alpha = 0
         //FIXME: position
-        v.center = CGPoint(x: self.bounds.minX, y: self.center.y)
-        
-        UIView.animate(withDuration: 0.3, animations: {
+        let newCenter = CGPoint(x: self.bounds.minX - 10, y: label.bounds.maxY )
+        v.center = CGPoint(x: collectionView.center.x, y: label.bounds.maxY)
+        print(v.center)
+        self.addSubview(v)
+        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
             v.alpha = 1
+            v.center = newCenter
         }) { (_) in
-            UIView.animate(withDuration: 0.3, delay: 1, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+            UIView.animate(withDuration: 0.3, delay: 1, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
                 
                 v.alpha = 0
             }) { bool in

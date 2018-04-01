@@ -412,27 +412,28 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
     public func bfs(source: Vertex<T>)-> [Vertex<T>] {
         var q = Queue<Vertex<T>>()
         q.enqueue(source)
-        
+        delegate?.updateDataStructure(at: source.index, mode: 1)
         var nodesExplored = [source]
         var visited = [source]
         
-        delegate?.updateVertexPosition(at: source.index)
+
         delegate?.updateExplored(at: source.index)
       
         while let c = q.dequeue() {
-            
+            delegate?.updateDataStructure(at: c.index, mode: 0)
             delegate?.updateVertexPosition(at: c.index)
             for edge in edgesFrom(sourceVertex: c) {
                 let neighbor = edge.to
                 
                 if !visited.contains(neighbor) {
                     q.enqueue(neighbor)
+                    delegate?.updateDataStructure(at: neighbor.index, mode: 1)
                     visited.append(neighbor)
                     nodesExplored.append(neighbor)
                     delegate?.updateExplored(at: neighbor.index)
-                    delegate?.updateVertexPosition(at: neighbor.index)
+                    //delegate?.updateVertexPosition(at: neighbor.index)
                 }
-                delegate?.updateVertexPosition(at: c.index)
+                //delegate?.updateVertexPosition(at: c.index)
             }
 
         }

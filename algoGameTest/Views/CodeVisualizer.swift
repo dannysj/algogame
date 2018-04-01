@@ -19,10 +19,36 @@ class CodeVisualizer: UIView {
         l.numberOfLines = 0
         return l
     }()
+    private lazy var consoleView: ConsoleView = {
+        let c = ConsoleView()
+        //c.center = self.center
+        c.bounds = CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height)
+        
+        return c
+    }()
     
-    func initCodeType(type: CodeType) {
+    private lazy var codeScrollableView: UITextView = {
+        let v = UITextView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.font = Theme.codeFont()
+        v.textColor = UIColor.white
+        v.isEditable = false
+        v.backgroundColor = UIColor.clear
+        return v
+    }()
+    
+    
+    private var withScrollableWindow: Bool = false
+    
+    func initCodeType(type: CodeType, withScrollableWindow:Bool  = false) {
         self.type = type
-        initWindow()
+        self.withScrollableWindow = withScrollableWindow
+        if withScrollableWindow {
+            initConsole()
+        } else {
+           initWindow()
+        }
+        
     }
     
     func initWindow() {
@@ -36,10 +62,38 @@ class CodeVisualizer: UIView {
         codeLabel.text = type.code.joined(separator: "\n")
     }
     
+    func initConsole() {
+        consoleView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(consoleView)
+        
+        NSLayoutConstraint.activate([
+            consoleView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 30),
+            consoleView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -30),
+            consoleView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0),
+            consoleView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0)
+            ])
+        
+        consoleView.addSubview(codeScrollableView)
+        NSLayoutConstraint.activate([
+            codeScrollableView.leadingAnchor.constraint(equalTo: consoleView.leadingAnchor, constant: 15),
+            codeScrollableView.trailingAnchor.constraint(equalTo: consoleView.trailingAnchor, constant: -15),
+            codeScrollableView.topAnchor.constraint(equalTo: consoleView.topAnchor, constant: 20),
+            codeScrollableView.bottomAnchor.constraint(equalTo: consoleView.bottomAnchor, constant: -15)
+            ])
+        //outputLabel.backgroundColor = UIColor.red
+        codeScrollableView.text = type.code.joined(separator: "\n")
+        
+    }
+    
     func showArrow() {
         
     }
     
+    func showScroll() {
+        if withScrollableWindow {
+            codeScrollableView.flashScrollIndicators()
+        }
+    }
 
 }
 

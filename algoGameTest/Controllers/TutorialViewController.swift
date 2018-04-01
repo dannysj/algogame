@@ -8,10 +8,10 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIViewControllerTransitioningDelegate {
+class TutorialViewController: UIViewController, UIViewControllerTransitioningDelegate {
     private var timer: Timer = Timer()
     private var codeType: CodeType!
-    private var timeLimit: Double = 5
+    private var timeLimit: Double = 10
     private var currentTime: Double = 0
     private var circleProgress: CircularProgress!
     private var consoleHeight: CGFloat = 300.0
@@ -103,13 +103,21 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate {
         self.view.backgroundColor = Theme.backgroundColor()
         // Do any additional setup after loading the view.
         // set code type
-        codeType = CodeType.randomCode()
+        
+        codeType = CodeType.trace2
+        
+       
         showScreen()
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    deinit {
+        if timer.isValid {
+            timer.invalidate()
+        }
+    }
+    func initCodeType(type: CodeType) {
+        self.codeType = type
+        
     }
     
     func showScreen() {
@@ -218,10 +226,12 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate {
                 gameVC = vc
             case .trace1:
                 let vc = TracerViewController()
+                //let vc = ViewController()
                 vc.initCodeType(type: codeType)
                 gameVC = vc
             case .trace2:
                 let vc = TracerViewController()
+                //let vc = ViewController()
                 vc.initCodeType(type: codeType)
                 gameVC = vc
             case .quickSort:
@@ -286,6 +296,7 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate {
         print("Info button tapped")
         if timer.isValid {
             timer.invalidate()
+            self.circleProgress.removeAllAnimations()
         }
         
         /*

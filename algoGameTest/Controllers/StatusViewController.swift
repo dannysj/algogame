@@ -185,7 +185,10 @@ class StatusViewController: UIViewController, UIViewControllerTransitioningDeleg
     }
     
     @objc func buttonTapped() {
-        
+        let tVC = TutorialViewController()
+        tVC.transitioningDelegate = self
+        tVC.modalPresentationStyle = .custom
+        self.present(tVC, animated: true, completion: nil)
     }
     
     /*

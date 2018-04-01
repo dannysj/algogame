@@ -82,7 +82,7 @@ public class System<T: Node>: Force {
 
 /* Links */
 // a link between two
-fileprivate struct Link<T: Node>: Hashable {
+fileprivate struct Link<T: Node>: Hashable, Equatable {
     typealias Degrees = Dictionary<T, UInt>
     let from: T
     let to: T
@@ -128,6 +128,10 @@ fileprivate struct Link<T: Node>: Hashable {
         // update
         nodes.update(with: fromNode)
         nodes.update(with: toNode)
+    }
+    
+    static func ==(lhs: Link<T>, rhs: Link<T>) -> Bool {
+        return lhs.from == rhs.from && lhs.to == rhs.to
     }
     
 }
