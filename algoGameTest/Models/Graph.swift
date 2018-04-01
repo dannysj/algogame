@@ -486,11 +486,13 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
         var visited = [Vertex<T>]()
         var s = Stack<Vertex<T>>()
         s.put(source)
-
+        delegate?.updateDataStructure(at: source.index, mode: 1)
         while !s.isEmpty {
             let v = s.pop()
+            delegate?.updateDataStructure(at: v!.index, mode: 0)
+            
             if !visited.contains(v!) {
-                let vIndex = visited.count
+                //let vIndex = visited.count
                 
                 delegate?.updateExplored(at: v!.index)
                 delegate?.updateVertexPosition(at: v!.index)
@@ -499,12 +501,14 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
                     print("Edge")
                     if !visited.contains(e.to) {
                         s.put(e.to)
-
+                        delegate?.updateExplored(at: e.to.index)
+                        delegate?.updateDataStructure(at: e.to.index, mode: 1)
+                        
                     }
                     
                 }
                 if !nodesExplores.isEmpty {
-                    delegate?.updateVertexPosition(at: nodesExplores.last!.index)
+//                    delegate?.updateVertexPosition(at: nodesExplores.last!.index)
                 }
                 nodesExplores.append(v!)
                 

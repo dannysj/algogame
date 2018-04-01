@@ -101,7 +101,7 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
         botOffset = nodeSize / 2.0
 
         // Bad way to
-       codeType = .bfs
+       codeType = .dijkstra
         setupGraph()
         setupView()
     }
@@ -640,12 +640,14 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
                     self.main.sync {
                         self.container.add(pair: (at, test.fillColor!, text))
                     }
+                    sleep(1)
                 }
                 else if mode == 0{
                     // remove
                     self.main.sync {
                         self.container.remove(index: at)
                     }
+                   // sleep(1)
                 }
 
                 print("Text is \(text)")

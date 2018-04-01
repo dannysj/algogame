@@ -72,7 +72,7 @@ class CurrentContainer: UIView {
         if type == .PriorityQueue {
             arr.sort(by: { $0.2 < $1.2 })
         } else if type == .Stack {
-            arr.reverse()
+            //arr.reverse()
         }
         updateStat()
     }
@@ -94,7 +94,11 @@ class CurrentContainer: UIView {
         }
         arr.remove(at: i)
         print("Removing x")
-        print(x!)
+        print(x!.0)
+        print("TEST")
+        for a in arr {
+            print(a.0)
+        }
         showRemovedItem(x!)
     }
     
@@ -216,7 +220,11 @@ extension CurrentContainer: UICollectionViewDelegate, UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath)
         let view = cell.contentView
-        let item = arr[indexPath.item]
+        var index = indexPath.item
+        if type == .Stack {
+            index = arr.count - index - 1
+        }
+        let item = arr[index]
         let pad: CGFloat = 2.5
         let layer = CAShapeLayer()
         layer.frame = view.bounds
