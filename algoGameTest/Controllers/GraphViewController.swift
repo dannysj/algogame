@@ -28,7 +28,7 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
     private let global = DispatchQueue.global()
     
     //leaky
-    private var isLeaky: Bool = true
+    private var isLeaky: Bool = false
     
     // graph
     fileprivate lazy var forceDirectedGraph: ForceDirectedGraph<ViewNode> = {
@@ -78,8 +78,18 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
     private var containerHeight: CGFloat = 200
     private var container: CurrentContainer!
     
-    private var gameLabel: UILabel!
-    
+    private lazy var gameLabel: UILabel = {
+        let l = UILabel()
+        l.font = Theme.codeTitleFont()
+        l.textAlignment = .center
+        l.textColor = Theme.lineColor()
+        return l
+    } ()
+    private var currentScore: Int = 0 {
+        didSet {
+            gameLabel.text = "\(currentScore)"
+        }
+    }
     private var currentBotNode: Int = 0
     private var nodeSize: CGFloat = 30
     private var botOffset: CGFloat = 0
@@ -146,11 +156,11 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
         view.layer.addSublayer(circleProgress)
         circleProgress.initialize(point: flatButton.center, radius: (buttonSideLength + 15) / 2, lineWidth: 4)
         
-        let tapGR = UITapGestureRecognizer(target: self, action: #selector(runAlgorithm))
+        let tapGR = UITapGestureRecognizer(target: self, action: #selector(buttonTapped))
         flatButton.addGestureRecognizer(tapGR)
         
         // debug
-        gameLabel = UILabel()
+       
         gameLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(gameLabel)
         
@@ -161,9 +171,7 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
             ])
         
         gameLabel.text = "\(graph.vertices.count)"
-        gameLabel.font = Theme.codeTitleFont()
-        gameLabel.textAlignment = .center
-        gameLabel.textColor = Theme.lineColor()
+
         
         if codeType != .dfslexi {
             setupContainer()
@@ -186,6 +194,17 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
         
     }
 
+    func gotoHell() {
+        if timer.isValid {
+            timer.invalidate()
+        }
+        let statusVC = StatusViewController()
+        statusVC.updateStatus(status: .Failed, score: currentScore)
+        
+        self.present(statusVC, animated: false, completion: nil)
+    }
+    
+    
     func activateTimer() {
         if timer.isValid {
             print("Timer is valid")
@@ -199,19 +218,17 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
     
     @objc func timerRunning() {
         currentTime += 1
-        
-        /*
+    
         if (currentTime == timeLimit) {
             print("5 seconds")
             if isLeaky {
-                let statusVC = StatusViewController()
-                statusVC.updateStatus(status: .Failed)
-
-                self.present(statusVC, animated: false, completion: nil)
+                gotoHell()
                 
+            } else {
+                currentScore += 5
             }
         }
- */
+ 
     }
     
     
@@ -394,10 +411,6 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
     }
     
     // MARK: debug
-    @objc private func randomTest() {
-        let i = random(min: 0, max: nodesLoc.count - 1)
-        updateBotLocation(nodeIndex: i)
-    }
 
     // MARK: Helper methods: Creating node + Bot update
     
@@ -606,8 +619,9 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
                     textLabel.attributedText = attributedTextSmall
                     self.container.updateLabel(index: at, string: attributedTextSmall.string)
                 }
-                
+                sleep(1)
             }
+            
         }
         
     }
@@ -657,6 +671,32 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
 
 
     }
+    
+    func checkAbleToPerformLeaky() -> Bool {
+        // one leaky at a time
+        if isLeaky {
+            return false
+        }
+        let x =  arc4random_uniform(2) == 0
+        if x {
+            isLeaky = true
+        }
+        return x
+    }
+    
+    @objc func buttonTapped() {
+        if isLeaky {
+            // add marks + leave
+            
+        }
+        else {
+            // lose game
+           
+            gotoHell()
+        }
+    }
+
+    
     // MARK: - Navigation
     
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {

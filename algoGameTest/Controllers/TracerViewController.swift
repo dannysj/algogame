@@ -14,6 +14,11 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
     private var timer: Timer = Timer()
     private var timeLimit: Double = 5
     private var currentTime: Double = 0
+    private var currentScore: Int = 0 {
+        didSet {
+            gameLabel.text = "\(currentScore)"
+        }
+    }
     private var height: CGFloat = UIScreen.main.bounds.height * 0.4
     private var codeVHeight: CGFloat = 0
     private lazy var console: OutputTracer = {
@@ -111,6 +116,9 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
                 statusVC.updateStatus(status: .Failed)
                 self.present(statusVC, animated: false, completion: nil)
                 
+            } else {
+                // continue, add marks
+                
             }
         }
     }
@@ -186,28 +194,47 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
     }
     
     @objc func buttonTapped() {
-        activateTimer()
+       // activateTimer()
         if isLeaky {
-            // add marks
+            // add marks + leave
+            
         }
         else {
             // lose game
-            //timer.invalidate()
+           // timer.invalidate()
+            gotoHell()
         }
     }
+    
+    func gotoHell() {
+        if timer.isValid {
+            timer.invalidate()
+        }
+        let statusVC = StatusViewController()
+        statusVC.updateStatus(status: .Failed, score: currentScore)
+        
+        self.present(statusVC, animated: false, completion: nil)
+    }
+    
     
     func leakyTracingAlgorithm1() {
         n = random(min: 3, max: 8)
         for i in 1 ..< n+1 {
             var j = n
             var str = ""
+            
             while ( j > i) {
-                str += " "
-                j -= 1
+                    if !leakyOrNot() {
+                    str += " "
+                    j -= 1
+                }
             }
+            
             while ( j >= 0) {
-                str += "*"
-                j -= 1
+                    if !leakyOrNot() {
+                    str += "*"
+                    j -= 1
+                }
             }
             //print(str)
             main.sync {
@@ -225,12 +252,15 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
         for i in 1 ..< n+1 {
             var str = ""
             for _ in 1 ..< (n - i) + 1 {
+                if !leakyOrNot() {
                 str += " "
+                }
             }
             
             for _ in 0 ..< i {
+                if !leakyOrNot() {
                 str += "* "
-                
+                }
             }
             
             print(str)
@@ -245,13 +275,16 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
         for i in stride(from: n,to: 0, by: -1) {
             var str = ""
             for _ in 1 ..< k {
+                if !leakyOrNot() {
                 str += " "
+                }
             }
             k += 1
             
             for _ in 0 ..< i {
+                if !leakyOrNot() {
                 str += "* "
-                
+                }
             }
             
             print(str)
@@ -275,6 +308,18 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
         }
 
         
+    }
+    
+    func leakyOrNot() -> Bool {
+        // one leaky at a time
+        if isLeaky {
+            return false
+        }
+        let x =  arc4random_uniform(2) == 0
+        if x {
+            isLeaky = true
+        }
+        return x
     }
     
     // MARK: - Navigation

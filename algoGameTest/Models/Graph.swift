@@ -13,6 +13,7 @@ protocol UpdateGraphStatusDelegate {
     func updateExplored(at: Int)
     func updateDijkstraLabel(at: Int, value: Double, fromValue: Double)
     func updateDataStructure(at: Int, mode: Int)
+    func checkAbleToPerformLeaky() -> Bool
 }
 
 public class Edge<T>: Equatable where T: Hashable {

@@ -107,8 +107,9 @@ class StatusViewController: UIViewController, UIViewControllerTransitioningDeleg
         self.score = score
     }
     
-    func updateStatus(status: GameStatus) {
+    func updateStatus(status: GameStatus, score: Int = 0) {
         self.status = status
+        self.score = score
     }
     
     private func setupFailScreen() {

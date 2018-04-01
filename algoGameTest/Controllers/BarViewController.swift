@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BarViewController: UIViewController, UIViewControllerTransitioningDelegate, UpdateLeakyStatusDelegate {
+class BarViewController: UIViewController, UIViewControllerTransitioningDelegate {
     // for transition
     let transition = BotFadeTransition()
     // timer
@@ -16,7 +16,11 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
     private var timeLimit: Double = 5
     private var currentTime: Double = 0
     // keep track error
-    private var leakyStatus: Bool = false
+    private var currentScore: Int = 0 {
+        didSet {
+            scoreLabel.text = "\(currentScore)"
+        }
+    }
     private var minBarCount: Int = 8
     private var maxBarCount: Int = 16
     private var circleProgress: CircularProgress!
@@ -25,7 +29,7 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
     var barCounter: Int = 0
     private var barViewHeight: CGFloat = UIScreen.main.bounds.height / 3
     private var codeVHeight: CGFloat = 0
-    private var isLeaky: Bool = true
+    private var isLeaky: Bool = false
     
     // private lazy var
     private lazy var barView: BarView = {
@@ -52,6 +56,16 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
         return button
     }()
     
+    private lazy var scoreLabel: UILabel = {
+        let l = UILabel()
+        l.font = Theme.scoreFont()
+        l.textAlignment = .center
+        l.textColor = Theme.lineColor()
+        l.translatesAutoresizingMaskIntoConstraints = false
+        l.text = "\(0)"
+        return l
+    } ()
+    
     private let main = DispatchQueue.main
     private let global = DispatchQueue.global()
     
@@ -62,7 +76,8 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
         self.view.backgroundColor = Theme.backgroundColor()
         // Do any additional setup after loading the view.
         codeVHeight = UIScreen.main.bounds.height - barViewHeight - buttonSideLength - 60
-
+        codeType = CodeType.insertionSort
+        
         initBarView()
 
     }
@@ -85,6 +100,7 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerRunning), userInfo: nil, repeats: true)
         print("Activated timer")
         circleProgress.animate(toValue: timeLimit)
+        randomTest()
     }
     
     @objc func timerRunning() {
@@ -93,16 +109,36 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
         if (currentTime == timeLimit) {
             print("5 seconds")
             if isLeaky {
-                let statusVC = StatusViewController()
-                statusVC.updateStatus(status: .Failed)
 
-                self.present(statusVC, animated: false, completion: nil)
+                gotoHell()
+            } else {
+                
+                // add marks
+                currentScore += 5
+                
                 
             }
         }
+ 
+    }
+    
+    func gotoHell() {
+        if timer.isValid {
+            timer.invalidate()
+        }
+        let statusVC = StatusViewController()
+        statusVC.updateStatus(status: .Failed, score: currentScore)
+        
+        self.present(statusVC, animated: false, completion: nil)
     }
     
     func initBarView() {
+        self.view.addSubview(scoreLabel)
+        NSLayoutConstraint.activate([
+            scoreLabel.heightAnchor.constraint(equalToConstant: 40),
+            scoreLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 30),
+            scoreLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
+            ])
         self.view.addSubview(barView)
         NSLayoutConstraint.activate([
             barView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
@@ -119,16 +155,6 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
         print(barData)
         barView.initDataStructure(arr: &barData)
         
-        self.view.addSubview(codeVisualizer)
-        NSLayoutConstraint.activate([
-            codeVisualizer.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            codeVisualizer.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-            codeVisualizer.topAnchor.constraint(equalTo: barView.bottomAnchor),
-            codeVisualizer.heightAnchor.constraint(equalToConstant: codeVHeight)
-            ])
-       
-        codeVisualizer.initCodeType(type: codeType)
-        
         self.view.addSubview(flatButton)
         
         NSLayoutConstraint.activate([
@@ -138,7 +164,19 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
             flatButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -30)
             ])
         
-         flatButton.initType(type: .Alert)
+        flatButton.initType(type: .Alert)
+        
+        self.view.addSubview(codeVisualizer)
+        NSLayoutConstraint.activate([
+            codeVisualizer.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            codeVisualizer.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            codeVisualizer.topAnchor.constraint(equalTo: barView.bottomAnchor),
+            codeVisualizer.bottomAnchor.constraint(equalTo: flatButton.topAnchor, constant: -15)
+            ])
+       
+        codeVisualizer.initCodeType(type: codeType, withScrollableWindow: true)
+        
+
         
         let buttonTap = UITapGestureRecognizer(target: self, action: #selector(testStart))
         flatButton.addGestureRecognizer(buttonTap)
@@ -149,7 +187,7 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
         view.layer.addSublayer(circleProgress)
         circleProgress.initialize(point: flatButton.center, radius: (buttonSideLength + 15) / 2, lineWidth: 4)
         
-        barView.pointer(at: 2)
+        barView.pointer(at: 0)
     
     }
     
@@ -163,9 +201,27 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
     }
     
     @objc func testStart() {
-        //insertionSort(barData)
-        global.async {
-            self.quickSort(&self.barData, low: 0, high: self.barData.count - 1)
+        //
+        if isLeaky {
+            // do smth if success
+            
+        }
+        else {
+            gotoHell()
+        }
+
+    }
+    
+    func runAlgorithm() {
+        if codeType == .quickSort {
+            global.async {
+                self.quickSort(&self.barData, low: 0, high: self.barData.count - 1)
+            }
+        }
+        else if codeType == .insertionSort {
+            global.async {
+                _ = self.insertionSort(self.barData)
+            }
         }
     }
 
@@ -174,13 +230,6 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
         // Dispose of any resources that can be recreated.
     }
     
-    func updateStatusLeaky() {
-        leakyStatus = true
-    }
-    
-    func updateStatusNormal() {
-        leakyStatus = false
-    }
 
     // MARK: sorting functions
     func insertionSort<T: Comparable>(_ array: [T]) -> [T] {
@@ -193,7 +242,7 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
             for i in 1 ..< sorted.count {
                 
                 self.updateUI {
-                    self.barView.pointer(at: i)
+                    self.barView.botPointer(at: i)
                 }
                 var y = i
                 let temp = sorted[y]
@@ -202,9 +251,11 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
                     self.barView.shiftStart(at: y, direction: .Up)
                 }
                 while y > 0 && temp < sorted[y-1]{
-                    sorted[y] = sorted[y - 1]
-                    self.updateUI {
-                        self.barView.move(from: y - 1, to: y)
+                    if !self.leakyOrNot() {
+                        sorted[y] = sorted[y - 1]
+                        self.updateUI {
+                            self.barView.move(from: y - 1, to: y)
+                        }
                     }
                     y -= 1
                 }
@@ -224,18 +275,13 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
     func quickSort<T: Comparable>(_ a: inout [T], low: Int, high: Int) {
         if low < high {
             let pivotIndex = random(min: low, max: high)
-            updateUI {
-                self.barView.pointer(at: pivotIndex)
-            }
-            // swap pivotIndex to high , to put pivot at the end
-            (a[pivotIndex], a[high]) = (a[high], a[pivotIndex])
-            updateUI {
-                self.barView.exchange(from: pivotIndex, to: high)
-                
-            }
-            updateUI {
-                self.barView.pointer(at: high)
-                
+            if !self.leakyOrNot() {
+                // swap pivotIndex to high , to put pivot at the end
+                (a[pivotIndex], a[high]) = (a[high], a[pivotIndex])
+                updateUI {
+                    self.barView.exchange(from: pivotIndex, to: high)
+                    
+                }
             }
             
             let p = partition(&a, low: low, high: high)
@@ -250,30 +296,40 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
     // partition
     func partition<T: Comparable>(_ a: inout [T], low: Int, high: Int) -> Int {
         let pivot = a[high]
-        
+        updateUI {
+            self.barView.pivot(at: high)
+            
+        }
         // BOT
         var i = low
         updateUI {
+            self.barView.pointer(at: i)
             self.barView.dashedLine(at: high, from: i)
         }
         for j in low ..< high {
             updateUI {
-                self.barView.shiftStart(at: j, direction: .Down)
+                self.barView.botPointer(at: j)
+                //self.barView.shiftStart(at: j, direction: .Down)
             }
+            
             if a[j] <= pivot {
-                (a[i], a[j]) = (a[j], a[i])
-                updateUI {
-                    self.barView.exchange(from: i, to: j)
+                if !self.leakyOrNot() {
+                    (a[i], a[j]) = (a[j], a[i])
+                    updateUI {
+                        self.barView.exchange(from: i, to: j)
+                    }
                 }
                 // BOT
                 i += 1
+                updateUI {
+                    self.barView.pointer(at: i)
+                }
             }
-            updateUI {
-                self.barView.shiftEnd(at: j)
-            }
+
         }
         
         // swap the pivot keke
+        
         (a[i], a[high]) = (a[high] , a[i])
         updateUI {
             self.barView.exchange(from: i, to: high)
@@ -281,6 +337,10 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
         }
         
         // pivot!
+        updateUI {
+            self.barView.removePivot()
+            
+        }
         return i
     }
     
@@ -297,6 +357,18 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
         transition.color = Theme.backgroundColor()
         
         return transition
+    }
+    
+    func leakyOrNot() -> Bool {
+        // one leaky at a time
+        if isLeaky {
+            return false
+        }
+        let x =  arc4random_uniform(2) == 0
+        if x {
+            isLeaky = true
+        }
+        return x
     }
     
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {

@@ -58,6 +58,23 @@ class BarView: UIView {
     }()
     private var line: CAShapeLayer!
     
+    private lazy var pLabel: UILabel = {
+        let l = UILabel()
+        l.text = "p"
+       // l.translatesAutoresizingMaskIntoConstraints = false
+        l.font = Theme.codeFont()
+        l.textAlignment = .center
+        l.textColor = Theme.lineColor()
+        return l
+    }()
+    
+    private lazy var bot: HexagonBot = {
+        let b = HexagonBot()
+        b.bounds = CGRect(x: 0, y: 0, width: 40, height: 50)
+        
+        centerView.addSubview(b)
+        return b
+    }()
     
     func initDataStructure(arr: inout [Int]) {
         self.arr = arr
@@ -104,6 +121,7 @@ class BarView: UIView {
             
             bars.append(bar)
         }
+        botPointer(at: 0)
     }
     
     // MARK: UI updater
@@ -161,6 +179,32 @@ class BarView: UIView {
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
            self.pointer.center = CGPoint(x: v.center.x,  y: v.frame.minY - self.barWidth * 1.0 )
         })
+    }
+    
+    public func botPointer(at: Int) {
+        let v = bars[at]
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+            self.bot.center = CGPoint(x: v.center.x,  y: v.frame.maxY + self.barWidth * 1.0 )
+        })
+    }
+    
+    public func pivot(at: Int) {
+        pLabel.alpha = 0
+        let v = bars[at]
+        addSubview(pLabel)
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+            self.pLabel.alpha = 1
+            self.pLabel.center = CGPoint(x: v.center.x,  y: v.frame.minY - self.barWidth * 1.0 )
+        })
+    }
+    
+    public func removePivot() {
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+            self.pLabel.alpha = 0
+            
+        }) { _ in
+            self.pLabel.removeFromSuperview()
+        }
     }
     
     public func removePointer() {

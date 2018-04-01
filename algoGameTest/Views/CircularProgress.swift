@@ -37,7 +37,7 @@ class CircularProgress: CAShapeLayer {
     func animate(toValue: Double) {
         let basicAnimation = CABasicAnimation(keyPath: "strokeStart")
         basicAnimation.fillMode = kCAFillModeForwards
-        
+        basicAnimation.repeatCount = Float.infinity
         basicAnimation.toValue = 1
         basicAnimation.duration = toValue
         basicAnimation.isRemovedOnCompletion = false

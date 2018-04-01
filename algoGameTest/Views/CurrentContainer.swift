@@ -18,13 +18,7 @@ class CurrentContainer: UIView {
     
     typealias Pairs = (Int, CGColor, String)
     private var type: ContainerType!
-    private var arr: [Pairs] = [] {
-        didSet {
-            print("Updated")
-            arrange()
-            //updateStat()
-        }
-    }
+    private var arr: [Pairs] = []
     private var cellID: String = "nodeCell"
     // nested UICollectionView
     private lazy var collectionView: UICollectionView = {
@@ -79,6 +73,7 @@ class CurrentContainer: UIView {
     
     public func add(pair:  Pairs) {
         arr.append(pair)
+        arrange()
     }
     
     public func remove(index:  Int) {
@@ -93,6 +88,7 @@ class CurrentContainer: UIView {
             }
         }
         arr.remove(at: i)
+        arrange()
         print("Removing x")
         print(x!.0)
         print("TEST")
@@ -107,7 +103,7 @@ class CurrentContainer: UIView {
     
             if arr[j].0 == index {
                 arr[j].2 = string
-                updateStat()
+                arrange()
                 break
             }
         }
