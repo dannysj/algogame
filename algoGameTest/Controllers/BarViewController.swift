@@ -12,13 +12,19 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
     // for transition
     let transition = BotFadeTransition()
     // timer
-    private var timer: Timer = Timer()
-    private var timeLimit: Double = 5
-    private var currentTime: Double = 0
+    private lazy var timer: Timer = {
+        let t = Timer(timeInterval: 1, target: self, selector: #selector(timerRunning), userInfo: nil, repeats: true)
+       // scheduledTimer(timeInterval: 1, target: self, selector: , userInfo: nil, repeats: true)
+        return t
+    }()
+    private var timeLimit: Int = 10
+    private var currentTime: Int = 0
     // keep track error
     private var currentScore: Int = 0 {
         didSet {
-            scoreLabel.text = "\(currentScore)"
+            main.async {
+                self.scoreLabel.text = "\(self.currentScore)"
+            }
         }
     }
     private var minBarCount: Int = 8
@@ -30,6 +36,15 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
     private var barViewHeight: CGFloat = UIScreen.main.bounds.height / 3
     private var codeVHeight: CGFloat = 0
     private var isLeaky: Bool = false
+    private lazy var plusScoreView: ScoreArithmeticHUD = {
+        let b = ScoreArithmeticHUD()
+        b.bounds = CGRect(x: 0, y: 0, width: 60, height: 50)
+        //b.translatesAutoresizingMaskIntoConstraints = false
+        //b.alpha = 0
+       
+        self.view.addSubview(b)
+        return b
+    }()
     
     // private lazy var
     private lazy var barView: BarView = {
@@ -62,6 +77,7 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
         l.textAlignment = .center
         l.textColor = Theme.lineColor()
         l.translatesAutoresizingMaskIntoConstraints = false
+        l.center = CGPoint(x: self.view.center.x, y: 20 + 30)
         l.text = "\(0)"
         return l
     } ()
@@ -74,22 +90,26 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = Theme.backgroundColor()
-        // Do any additional setup after loading the view.
+
         codeVHeight = UIScreen.main.bounds.height - barViewHeight - buttonSideLength - 60
-        codeType = CodeType.insertionSort
+        //codeType = CodeType.insertionSort
         
         initBarView()
-
     }
     
     
-    func initCodeType(type: CodeType) {
+    func initCodeType(type: CodeType, score: Int) {
         self.codeType = type
+        self.currentScore = score
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        activateTimer()
+        main.asyncAfter(deadline: .now() + 2.5) {
+            self.runAlgorithm()
+            self.activateTimer()
+            self.codeVisualizer.showScroll()
+        }
     }
     
     func activateTimer() {
@@ -98,24 +118,24 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
             timer.invalidate()
         }
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerRunning), userInfo: nil, repeats: true)
-        print("Activated timer")
-        circleProgress.animate(toValue: timeLimit)
-        randomTest()
+         print("Activated timer")
+        circleProgress.animate(toValue: Double(timeLimit))
+        runAlgorithm()
     }
     
     @objc func timerRunning() {
         currentTime += 1
         
-        if (currentTime == timeLimit) {
+        if (currentTime % timeLimit == 0) {
             print("5 seconds")
             if isLeaky {
 
                 gotoHell()
             } else {
-                
+                isLeaky = false
                 // add marks
                 currentScore += 5
-                
+                plusScoreView.updateScore(score: 5)
                 
             }
         }
@@ -123,9 +143,9 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
     }
     
     func gotoHell() {
-        if timer.isValid {
-            timer.invalidate()
-        }
+       
+        timer.invalidate()
+        
         let statusVC = StatusViewController()
         statusVC.updateStatus(status: .Failed, score: currentScore)
         
@@ -139,6 +159,9 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
             scoreLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 30),
             scoreLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
             ])
+        
+        plusScoreView.center = CGPoint(x: scoreLabel.center.x + 30, y: scoreLabel.center.y + 10)
+        
         self.view.addSubview(barView)
         NSLayoutConstraint.activate([
             barView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
@@ -187,42 +210,62 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
         view.layer.addSublayer(circleProgress)
         circleProgress.initialize(point: flatButton.center, radius: (buttonSideLength + 15) / 2, lineWidth: 4)
         
-        barView.pointer(at: 0)
+        //barView.pointer(at: 0)
     
     }
     
-    @objc func randomTest() {
-     
-        barView.exchange(from: barCounter, to: barCount - barCounter - 1)
-        barCounter += 1
-        let test = random(min: 0, max: barCount - 1)
-        print("test \(test)")
-        barView.pointer(at: test)
-    }
     
     @objc func testStart() {
         //
         if isLeaky {
             // do smth if success
-            
+            currentScore += 5
+            gotoHeaven()
         }
         else {
             gotoHell()
         }
 
     }
+    func gotoHeaven() {
+        timer.invalidate()
+        let statusVC = StatusViewController()
+        statusVC.updateStatus(status: .Pass, score: currentScore)
+        
+        self.present(statusVC, animated: false, completion: nil)
+    }
+    
+    func gotoHeavenWithoutFailing() {
+        timer.invalidate()
+        let statusVC = StatusViewController()
+        statusVC.updateStatus(status: .PassWithoutError, score: currentScore)
+        
+        self.present(statusVC, animated: false, completion: nil)
+    }
     
     func runAlgorithm() {
-        if codeType == .quickSort {
-            global.async {
+         global.async {
+            if self.codeType == .quickSort {
+                
                 self.quickSort(&self.barData, low: 0, high: self.barData.count - 1)
-            }
+                     
+                
+              
+            
         }
-        else if codeType == .insertionSort {
-            global.async {
-                _ = self.insertionSort(self.barData)
+            else if self.codeType == .insertionSort {
+            
+                
+                    _ = self.insertionSort(self.barData)
+                    
+                
+               
             }
+            //self.gotoHeavenWithoutFailing()
+           
         }
+     
+      
     }
 
     override func didReceiveMemoryWarning() {
@@ -244,24 +287,28 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
                 self.updateUI {
                     self.barView.botPointer(at: i)
                 }
-                var y = i
-                let temp = sorted[y]
-                // increasing order sort
-                self.updateUI {
-                    self.barView.shiftStart(at: y, direction: .Up)
-                }
-                while y > 0 && temp < sorted[y-1]{
-                    if !self.leakyOrNot() {
-                        sorted[y] = sorted[y - 1]
-                        self.updateUI {
-                            self.barView.move(from: y - 1, to: y)
-                        }
+                if !self.leakyOrNot() {
+                    var y = i
+                    let temp = sorted[y]
+                    // increasing order sort
+                    self.updateUI {
+                        self.barView.shiftStart(at: y, direction: .Up)
                     }
-                    y -= 1
-                }
-                sorted[y] = temp
-                self.updateUI {
-                    self.barView.shiftEnd(at: y)
+                    
+                        while y > 0 && temp < sorted[y-1]{
+                            
+                                sorted[y] = sorted[y - 1]
+                                self.updateUI {
+                                    self.barView.move(from: y - 1, to: y)
+                                }
+                            
+                            y -= 1
+                        }
+                   
+                    sorted[y] = temp
+                    self.updateUI {
+                        self.barView.shiftEnd(at: y)
+                    }
                 }
               
             }
@@ -297,7 +344,7 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
     func partition<T: Comparable>(_ a: inout [T], low: Int, high: Int) -> Int {
         let pivot = a[high]
         updateUI {
-            self.barView.pivot(at: high)
+            self.barView.pointer(at: high)
             
         }
         // BOT
@@ -338,7 +385,7 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
         
         // pivot!
         updateUI {
-            self.barView.removePivot()
+            self.barView.removePointer()
             
         }
         return i
@@ -361,10 +408,11 @@ class BarViewController: UIViewController, UIViewControllerTransitioningDelegate
     
     func leakyOrNot() -> Bool {
         // one leaky at a time
+        print("Current leaky is \(isLeaky)")
         if isLeaky {
             return false
         }
-        let x =  arc4random_uniform(2) == 0
+        let x =  arc4random_uniform(8) == 0
         if x {
             isLeaky = true
         }

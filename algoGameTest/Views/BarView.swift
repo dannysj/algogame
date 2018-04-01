@@ -127,11 +127,11 @@ class BarView: UIView {
     // MARK: UI updater
     
     public func exchange(from: Int, to: Int) {
-        shiftStart(at: from, direction: .Up)
-        shiftStart(at: to, direction: .Down)
+       // shiftStart(at: from, direction: .Up)
+      //  shiftStart(at: to, direction: .Down)
         move(from: from, to: to)
-        shiftEnd(at: from)
-        shiftEnd(at: to)
+      //  shiftEnd(at: from)
+      //  shiftEnd(at: to)
     }
     
     public func shiftStart(at: Int, direction: DirectionCase) {

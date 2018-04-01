@@ -50,12 +50,12 @@ class ScoreArithmeticHUD: UIView {
         self.score = score
         let currentCenter = self.center
         self.center = CGPoint(x: currentCenter.x, y: currentCenter.y - 10)
-        UIView.animate(withDuration: 2, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
-                self.center = CGPoint(x: currentCenter.x, y: currentCenter.y + 10)
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+            self.center = CGPoint(x: currentCenter.x, y: currentCenter.y + 10)
             self.updateLabel.alpha = 1.0
         }) {
             bool in
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+            UIView.animate(withDuration: 0.5, delay: 1, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
                 
                 self.updateLabel.alpha = 0.0
             }) { bool in

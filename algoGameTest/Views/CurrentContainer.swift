@@ -197,7 +197,12 @@ class CurrentContainer: UIView {
         label.font = Theme.codeFont()
         label.textColor = UIColor.white
         label.textAlignment = .center
-        label.text = text
+        var t1 = text
+        let g = text.components(separatedBy: CharacterSet.newlines)
+        if g.count > 1 {
+            t1 = g[1]
+        }
+        label.text = t1
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
         NSLayoutConstraint.activate([

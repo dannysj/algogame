@@ -11,14 +11,29 @@ import UIKit
 class TracerViewController: UIViewController, UIViewControllerTransitioningDelegate {
     // for transition
     let transition = BotFadeTransition()
-    private var timer: Timer = Timer()
-    private var timeLimit: Double = 5
-    private var currentTime: Double = 0
+    private lazy var timer: Timer = {
+        let t = Timer(timeInterval: 1, target: self, selector: #selector(timerRunning), userInfo: nil, repeats: true)
+        // scheduledTimer(timeInterval: 1, target: self, selector: , userInfo: nil, repeats: true)
+        return t
+    }()
+    private var timeLimit: Int = 5
+    private var currentTime: Int = 0
     private var currentScore: Int = 0 {
         didSet {
-            gameLabel.text = "\(currentScore)"
+            main.async {
+                self.gameLabel.text = "\(self.currentScore)"
+            }
         }
     }
+    private lazy var plusScoreView: ScoreArithmeticHUD = {
+        let b = ScoreArithmeticHUD()
+        b.bounds = CGRect(x: 0, y: 0, width: 60, height: 50)
+        //b.translatesAutoresizingMaskIntoConstraints = false
+        //b.alpha = 0
+        
+        self.view.addSubview(b)
+        return b
+    }()
     private var height: CGFloat = UIScreen.main.bounds.height * 0.4
     private var codeVHeight: CGFloat = 0
     private lazy var console: OutputTracer = {
@@ -51,9 +66,10 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
         let l = UILabel()
         l.text = "-"
         l.translatesAutoresizingMaskIntoConstraints = false
-        l.font = Theme.codeTitleFont()
+        l.font = Theme.scoreFont()
         l.textAlignment = .center
         l.textColor = Theme.lineColor()
+        l.center = CGPoint(x: self.view.center.x, y: 20 + 30)
         return l
     }()
     
@@ -85,49 +101,52 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
         // Do any additional setup after loading the view.
         codeVHeight = UIScreen.main.bounds.height - height - buttonSideLength - 60
         self.view.backgroundColor = Theme.backgroundColor()
-        codeType = .trace2
-        setupScreen()
-    }
-    
-    func initCodeType(type: CodeType) {
-        self.codeType = type
         
     }
     
 
+    
+    func initCodeType(type: CodeType, score: Int) {
+        self.codeType = type
+        self.currentScore = score
+        setupScreen()
+    }
+    
     func activateTimer() {
-        if timer.isValid {
-            print("Timer is valid")
-            timer.invalidate()
-        }
+
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerRunning), userInfo: nil, repeats: true)
         print("Activated timer")
         
-        circleProgress.animate(toValue: timeLimit)
+        circleProgress.animate(toValue: Double(timeLimit))
     }
     
     @objc func timerRunning() {
         currentTime += 1
         print("Called")
-        if (currentTime == timeLimit) {
+        if (currentTime % timeLimit == 0) {
             print("5 seconds")
             if isLeaky {
                 let statusVC = StatusViewController()
-                statusVC.updateStatus(status: .Failed)
+                statusVC.updateStatus(status: .Failed, score: currentScore)
                 self.present(statusVC, animated: false, completion: nil)
                 
             } else {
                 // continue, add marks
-                
+                currentScore += 5
+                plusScoreView.updateScore(score: currentScore)
+                isLeaky = false
             }
         }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        runAlgorithm()
-        activateTimer()
-        codeVisualizer.showScroll()
+        main.asyncAfter(deadline: .now() + 2.5) {
+            self.runAlgorithm()
+            self.activateTimer()
+            self.codeVisualizer.showScroll()
+        }
+
     }
     func setupScreen() {
         self.view.addSubview(gameLabel)
@@ -197,7 +216,8 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
        // activateTimer()
         if isLeaky {
             // add marks + leave
-            
+            currentScore += 5
+            gotoHeaven()
         }
         else {
             // lose game
@@ -206,10 +226,18 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
         }
     }
     
+    func gotoHeaven() {
+        timer.invalidate()
+        let statusVC = StatusViewController()
+        statusVC.updateStatus(status: .Pass, score: currentScore)
+        
+        self.present(statusVC, animated: false, completion: nil)
+    }
+    
     func gotoHell() {
-        if timer.isValid {
+      //  if timer.isValid {
             timer.invalidate()
-        }
+       // }
         let statusVC = StatusViewController()
         statusVC.updateStatus(status: .Failed, score: currentScore)
         
@@ -222,9 +250,9 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
         for i in 1 ..< n+1 {
             var j = n
             var str = ""
-            
-            while ( j > i) {
-                    if !leakyOrNot() {
+            if !leakyOrNot() {
+                while ( j > i) {
+                
                     str += " "
                     j -= 1
                 }
@@ -274,8 +302,9 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
    
         for i in stride(from: n,to: 0, by: -1) {
             var str = ""
+            if !leakyOrNot() {
             for _ in 1 ..< k {
-                if !leakyOrNot() {
+                
                 str += " "
                 }
             }
@@ -305,9 +334,18 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
             else {
                 self.leakyTracingAlgorithm2()
             }
+            
+           self.gotoHeavenWithoutFailing()
         }
-
+       
         
+    }
+    func gotoHeavenWithoutFailing() {
+        timer.invalidate()
+        let statusVC = StatusViewController()
+        statusVC.updateStatus(status: .PassWithoutError, score: currentScore)
+        
+        self.present(statusVC, animated: false, completion: nil)
     }
     
     func leakyOrNot() -> Bool {
@@ -315,7 +353,7 @@ class TracerViewController: UIViewController, UIViewControllerTransitioningDeleg
         if isLeaky {
             return false
         }
-        let x =  arc4random_uniform(2) == 0
+        let x =  arc4random_uniform(6) == 1
         if x {
             isLeaky = true
         }

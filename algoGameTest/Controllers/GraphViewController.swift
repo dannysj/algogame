@@ -42,9 +42,13 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
     } ()
     
     // timer
-    private var timer: Timer = Timer()
-    private var timeLimit: Double = 5
-    private var currentTime: Double = 0
+    private lazy var timer: Timer = {
+        let t = Timer(timeInterval: 1, target: self, selector: #selector(timerRunning), userInfo: nil, repeats: true)
+        // scheduledTimer(timeInterval: 1, target: self, selector: , userInfo: nil, repeats: true)
+        return t
+    }()
+    private var timeLimit: Int = 10
+    private var currentTime: Int = 0
     private var circleProgress: CircularProgress!
     private lazy var bot: HexagonBot = {
         let b = HexagonBot()
@@ -53,7 +57,15 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
         view.addSubview(b)
         return b
     }()
-    
+    private lazy var plusScoreView: ScoreArithmeticHUD = {
+        let b = ScoreArithmeticHUD()
+        b.bounds = CGRect(x: 0, y: 0, width: 60, height: 50)
+        //b.translatesAutoresizingMaskIntoConstraints = false
+        //b.alpha = 0
+        
+        self.view.addSubview(b)
+        return b
+    }()
     private lazy var linkLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
         layer.strokeColor = UIColor.white.cgColor
@@ -80,14 +92,18 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
     
     private lazy var gameLabel: UILabel = {
         let l = UILabel()
-        l.font = Theme.codeTitleFont()
+        l.font = Theme.scoreFont()
         l.textAlignment = .center
         l.textColor = Theme.lineColor()
+        l.center = CGPoint(x: self.view.center.x, y: 20 + 30)
         return l
     } ()
     private var currentScore: Int = 0 {
         didSet {
-            gameLabel.text = "\(currentScore)"
+            main.async {
+                self.gameLabel.text = "\(self.currentScore)"
+            }
+            
         }
     }
     private var currentBotNode: Int = 0
@@ -104,24 +120,26 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(hex: 0x17264B)
+        botOffset = nodeSize / 2.0
         
         // Do any additional setup after loading the view.
         //setupGraphWithNodes()
-
-        botOffset = nodeSize / 2.0
-
-        // Bad way to
-       codeType = .dijkstra
         setupGraph()
         setupView()
+ 
     }
     
+
     // MARK: When View appear
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         //updateBotLocation(nodeIndex: 0)
         forceDirectedGraph.start()
-        activateTimer()
+        main.asyncAfter(deadline: .now() + 2.5) {
+            self.runAlgorithm()
+            self.activateTimer()
+            
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -161,16 +179,16 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
         
         // debug
        
-        gameLabel.translatesAutoresizingMaskIntoConstraints = false
+       gameLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(gameLabel)
         
-        NSLayoutConstraint.activate([
+       NSLayoutConstraint.activate([
             gameLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 30),
             gameLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
             gameLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30)
             ])
-        
-        gameLabel.text = "\(graph.vertices.count)"
+           plusScoreView.center = CGPoint(x: gameLabel.center.x + 30, y: gameLabel.center.y + 10)
+        gameLabel.text = "\(currentScore)"
 
         
         if codeType != .dfslexi {
@@ -194,10 +212,18 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
         
     }
 
+    func gotoHeaven() {
+        timer.invalidate()
+        let statusVC = StatusViewController()
+        statusVC.updateStatus(status: .Pass, score: currentScore)
+        
+        self.present(statusVC, animated: false, completion: nil)
+    }
+    
     func gotoHell() {
-        if timer.isValid {
+        
             timer.invalidate()
-        }
+        
         let statusVC = StatusViewController()
         statusVC.updateStatus(status: .Failed, score: currentScore)
         
@@ -206,26 +232,25 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
     
     
     func activateTimer() {
-        if timer.isValid {
-            print("Timer is valid")
-            timer.invalidate()
-        }
-        
+     
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerRunning), userInfo: nil, repeats: true)
         print("Activated timer")
-        circleProgress.animate(toValue: timeLimit)
+        isLeaky = false
+        circleProgress.animate(toValue: Double(timeLimit))
     }
     
     @objc func timerRunning() {
         currentTime += 1
     
-        if (currentTime == timeLimit) {
+        if (currentTime % timeLimit == 0) {
             print("5 seconds")
             if isLeaky {
                 gotoHell()
                 
             } else {
+                isLeaky = false
                 currentScore += 5
+                plusScoreView.updateScore(score: 5)
             }
         }
  
@@ -238,9 +263,12 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
             success = randomSetupGraph()
         }
     }
-    func initCodeType(type: CodeType) {
+    
+    func initCodeType(type: CodeType, score: Int) {
         self.codeType = type
+        self.currentScore = score
     }
+    
     
     func setupContainer() {
         //setup container
@@ -535,6 +563,14 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
         
     }
     
+    func gotoHeavenWithoutFailing() {
+        timer.invalidate()
+        let statusVC = StatusViewController()
+        statusVC.updateStatus(status: .PassWithoutError, score: currentScore)
+        
+        self.present(statusVC, animated: false, completion: nil)
+    }
+    
     // MARK: Run Algortihm
     @objc func runAlgorithm() {
         print("Running algorithm")
@@ -555,8 +591,10 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
                     default:
                         fatalError("This is graph, unexpected nongraph algorithm")
                 }
-                
+                 //self.gotoHeavenWithoutFailing()
             }
+            
+           
         }
     }
     
@@ -677,7 +715,7 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
         if isLeaky {
             return false
         }
-        let x =  arc4random_uniform(2) == 0
+        let x =  arc4random_uniform(4) == 0
         if x {
             isLeaky = true
         }
@@ -687,7 +725,8 @@ class GraphViewController: UIViewController, UIViewControllerTransitioningDelega
     @objc func buttonTapped() {
         if isLeaky {
             // add marks + leave
-            
+            currentScore += 5
+            gotoHeaven()
         }
         else {
             // lose game

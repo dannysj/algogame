@@ -18,7 +18,7 @@ class BotFadeTransition: NSObject {
     lazy var bot: HexagonBot = {
         let b = HexagonBot()
         b.bounds = CGRect(x: 0, y: 0, width: 40, height: 50)
-        b.translatesAutoresizingMaskIntoConstraints = false
+        //b.translatesAutoresizingMaskIntoConstraints = false
       
         return b
     }()

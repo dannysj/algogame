@@ -9,12 +9,21 @@
 import UIKit
 
 class TutorialViewController: UIViewController, UIViewControllerTransitioningDelegate {
-    private var timer: Timer = Timer()
+    private lazy var timer: Timer = {
+        let t = Timer(timeInterval: 1, target: self, selector: #selector(timerRunning), userInfo: nil, repeats: true)
+        // scheduledTimer(timeInterval: 1, target: self, selector: , userInfo: nil, repeats: true)
+        return t
+    }()
     private var codeType: CodeType!
-    private var timeLimit: Double = 10
-    private var currentTime: Double = 0
-    private var circleProgress: CircularProgress!
+    private var timeLimit: Int = 15
+    private var currentTime: Int = 0
+    private lazy var circleProgress: CircularProgress = {
+        let v = CircularProgress()
+        
+        return v
+    }()
     private var consoleHeight: CGFloat = 300.0
+    private var score: Int = 0
     private var codeVHeight: CGFloat = 100.0 {
         didSet {
             consoleHeight = codeVHeight + labelHeight + 30 + 45
@@ -93,21 +102,18 @@ class TutorialViewController: UIViewController, UIViewControllerTransitioningDel
     // for transition
     let transition = BotFadeTransition()
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        activateTimer()
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = Theme.backgroundColor()
         // Do any additional setup after loading the view.
         // set code type
-        
-        codeType = CodeType.trace2
-        
-       
-        showScreen()
+
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        activateTimer()
     }
     
     deinit {
@@ -115,9 +121,25 @@ class TutorialViewController: UIViewController, UIViewControllerTransitioningDel
             timer.invalidate()
         }
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        showScreen()
+    }
+    
     func initCodeType(type: CodeType) {
         self.codeType = type
-        
+       // showScreen()
+    }
+    
+    func initRandomType() {
+        self.codeType = CodeType.randomCode()
+      //  showScreen()
+    }
+    
+    func initJustScore(score: Int) {
+        codeType = CodeType.randomCode()
+       // showScreen()
     }
     
     func showScreen() {
@@ -167,19 +189,18 @@ class TutorialViewController: UIViewController, UIViewControllerTransitioningDel
     }
     
     func activateTimer() {
-        if timer.isValid {
-            print("Timer is valid")
-            timer.invalidate()
-        }
+
         currentTime = 0
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerRunning), userInfo: nil, repeats: true)
         print("Activated timer")
-        circleProgress.animate(toValue: timeLimit)
+        circleProgress.animate(toValue: Double(timeLimit))
     }
     
     @objc func timerRunning() {
         currentTime += 1
+        print("Run2")
         if currentTime == timeLimit {
+            print("Go")
             okButtonTapped()
         }
     }
@@ -206,47 +227,49 @@ class TutorialViewController: UIViewController, UIViewControllerTransitioningDel
     }
     
     @objc func okButtonTapped() {
+        self.circleProgress.removeAllAnimations()
         var gameVC: UIViewController? = nil
         switch codeType {
             case .dfslexi:
                 let vc = GraphViewController()
-                vc.initCodeType(type: codeType)
+                vc.initCodeType(type: codeType, score: score)
                 gameVC = vc
             case .dfsnonlexi:
                 let vc = GraphViewController()
-                vc.initCodeType(type: codeType)
+                vc.initCodeType(type: codeType, score: score)
                 gameVC = vc
             case .bfs:
                 let vc = GraphViewController()
-                vc.initCodeType(type: codeType)
+                vc.initCodeType(type: codeType, score: score)
                 gameVC = vc
             case .dijkstra:
                 let vc = GraphViewController()
-                vc.initCodeType(type: codeType)
+                vc.initCodeType(type: codeType, score: score)
                 gameVC = vc
             case .trace1:
                 let vc = TracerViewController()
                 //let vc = ViewController()
-                vc.initCodeType(type: codeType)
+                vc.initCodeType(type: codeType, score: score)
                 gameVC = vc
             case .trace2:
                 let vc = TracerViewController()
                 //let vc = ViewController()
-                vc.initCodeType(type: codeType)
+                vc.initCodeType(type: codeType, score: score)
                 gameVC = vc
             case .quickSort:
                 let vc = BarViewController()
-                vc.initCodeType(type: codeType)
+                vc.initCodeType(type: codeType, score: score)
                 gameVC = vc
             case .insertionSort:
                 let vc = BarViewController()
-                vc.initCodeType(type: codeType)
+                vc.initCodeType(type: codeType, score: score)
                 gameVC = vc
             
         default:
             fatalError("Error in generating codeType")
         }
         if let gotoVC = gameVC {
+            timer.invalidate()
             gotoVC.transitioningDelegate = self
             gotoVC.modalPresentationStyle = .custom
             self.present(gotoVC, animated: true, completion: nil)
@@ -254,14 +277,20 @@ class TutorialViewController: UIViewController, UIViewControllerTransitioningDel
 
     }
     
+    public func moveScore(score: Int) {
+        self.score = score
+        codeType = CodeType.randomCode()
+        showScreen()
+    }
+    
     private func addInfoButton() {
         self.view.addSubview(infoButton)
         
         NSLayoutConstraint.activate([
-            infoButton.leadingAnchor.constraint(equalTo: bot.trailingAnchor, constant: 15),
+            infoButton.leadingAnchor.constraint(equalTo: bot.trailingAnchor, constant: 10),
             infoButton.heightAnchor.constraint(equalToConstant: buttonSideLength),
             infoButton.widthAnchor.constraint(equalToConstant: buttonSideLength ),
-            infoButton.bottomAnchor.constraint(equalTo: bot.topAnchor, constant: -5)
+            infoButton.bottomAnchor.constraint(equalTo: bot.topAnchor, constant: 30)
             ])
         
         infoButton.initType(type: .Info)
@@ -297,6 +326,9 @@ class TutorialViewController: UIViewController, UIViewControllerTransitioningDel
         if timer.isValid {
             timer.invalidate()
             self.circleProgress.removeAllAnimations()
+            UIView.animate(withDuration: 0.3) {
+                self.circleProgress.opacity = 0
+            }
         }
         
         /*

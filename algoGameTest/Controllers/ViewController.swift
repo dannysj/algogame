@@ -77,7 +77,7 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate {
     ]
     
     private var delay: [(Int, Int)] = [
-    (1,2),(2,5), (2,2), (2,5), (2,7), (2,5), (2,4), (2,8), (2,4), (2,5)
+    (1,1),(1,3), (1,1), (1,3), (1,3), (1,2), (1,1), (1,3), (1,2), (1,3)
     ]
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -88,9 +88,9 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(hex: 0x17264B)
         // Do any additional setup after loading the view, typically from a nib.
+        
         setupScreen()
     }
-    
 
     
     func setupScreen() {
@@ -149,7 +149,8 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate {
     
     @objc func skip() {
         let gotoVC = TutorialViewController()
-        gotoVC.initCodeType(type: .trace1)
+        let type: CodeType = (arc4random_uniform(2) % 2 == 0 ? .trace1 : .trace2)
+        gotoVC.initCodeType(type: .trace2)
         gotoVC.transitioningDelegate = self
         gotoVC.modalPresentationStyle = .custom
         self.present(gotoVC, animated: true, completion: nil)
@@ -233,7 +234,8 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate {
             DispatchQueue.main.sync {
                 // Do smth:
                 let gotoVC = TutorialViewController()
-                gotoVC.initCodeType(type: .trace1)
+                let type: CodeType = (arc4random_uniform(2) % 2 == 0 ? .trace1 : .trace2)
+                gotoVC.initCodeType(type: .trace2)
                 gotoVC.transitioningDelegate = self
                 gotoVC.modalPresentationStyle = .custom
                 self.present(gotoVC, animated: true, completion: nil)

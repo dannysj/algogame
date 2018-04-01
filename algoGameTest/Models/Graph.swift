@@ -419,7 +419,7 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
         
 
         delegate?.updateExplored(at: source.index)
-      
+        
         while let c = q.dequeue() {
             delegate?.updateDataStructure(at: c.index, mode: 0)
             delegate?.updateVertexPosition(at: c.index)
@@ -427,12 +427,14 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
                 let neighbor = edge.to
                 
                 if !visited.contains(neighbor) {
-                    q.enqueue(neighbor)
-                    delegate?.updateDataStructure(at: neighbor.index, mode: 1)
-                    visited.append(neighbor)
-                    nodesExplored.append(neighbor)
-                    delegate?.updateExplored(at: neighbor.index)
-                    //delegate?.updateVertexPosition(at: neighbor.index)
+                    if !((delegate?.checkAbleToPerformLeaky())!) {
+                        q.enqueue(neighbor)
+                        delegate?.updateDataStructure(at: neighbor.index, mode: 1)
+                        visited.append(neighbor)
+                        nodesExplored.append(neighbor)
+                        delegate?.updateExplored(at: neighbor.index)
+                        //delegate?.updateVertexPosition(at: neighbor.index)
+                    }
                 }
                 //delegate?.updateVertexPosition(at: c.index)
             }
@@ -464,8 +466,10 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
         
         for e in edgesFrom(sourceVertex: source) {
             if !(e.to.visited) {
-                nodesExplores += dfs_lexi(source: e.to)
-                delegate?.updateVertexPosition(at: source.index)
+                if !((delegate?.checkAbleToPerformLeaky())!) {
+                    nodesExplores += dfs_lexi(source: e.to)
+                    delegate?.updateVertexPosition(at: source.index)
+                }
             }
         }
         
@@ -501,10 +505,11 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
                 for e in edgesFrom(sourceVertex: v!) {
                     print("Edge")
                     if !visited.contains(e.to) {
-                        s.put(e.to)
-                        delegate?.updateExplored(at: e.to.index)
-                        delegate?.updateDataStructure(at: e.to.index, mode: 1)
-                        
+                        if !((delegate?.checkAbleToPerformLeaky())!) {
+                            s.put(e.to)
+                            delegate?.updateExplored(at: e.to.index)
+                            delegate?.updateDataStructure(at: e.to.index, mode: 1)
+                        }
                     }
                     
                 }
@@ -543,17 +548,19 @@ open class AdjacencyListGraph<T>: Graph<T> where T: Hashable {
             delegate?.updateDataStructure(at: ut!.index, mode: 0)
             if let u = ut {
                 for e in edgesFrom(sourceVertex: u) {
-                    let v = e.to
-                    let alt = u.dist + e.weight!
-                    delegate?.updateExplored(at: v.index)
-                    delegate?.updateVertexPosition(at: v.index)
+                    if !((delegate?.checkAbleToPerformLeaky())!){
+                        let v = e.to
+                        let alt = u.dist + e.weight!
+                        delegate?.updateExplored(at: v.index)
+                        delegate?.updateVertexPosition(at: v.index)
 
-                    
-                    // FIXME: update route
-                    if alt < v.dist {
-                        v.dist = alt
-                        v.prev = u
-                        delegate?.updateDijkstraLabel(at: v.index, value: alt, fromValue: e.weight!)
+                        
+                        // FIXME: update route
+                        if alt < v.dist {
+                            v.dist = alt
+                            v.prev = u
+                            delegate?.updateDijkstraLabel(at: v.index, value: alt, fromValue: e.weight!)
+                        }
                     }
                 }
             }
