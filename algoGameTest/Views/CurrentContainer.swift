@@ -22,7 +22,7 @@ class CurrentContainer: UIView {
         didSet {
             print("Updated")
             arrange()
-            updateStat()
+            //updateStat()
         }
     }
     private var cellID: String = "nodeCell"
@@ -74,6 +74,7 @@ class CurrentContainer: UIView {
         } else if type == .Stack {
             arr.reverse()
         }
+        updateStat()
     }
     
     public func add(pair:  Pairs) {
