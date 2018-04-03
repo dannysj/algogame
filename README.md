@@ -23,7 +23,7 @@ Some of the algorithm used in the game:
 
 ### Insertion Sort
 
-<img src="./screenshots/is.PNG" width="400" >
+<img src="./screenshots/is.gif" width="400" >
 
 ### Quick Sort
 
