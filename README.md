@@ -42,5 +42,5 @@ And also Dijkstra's, DFS, and more soon!
 ## What I have learnt
 Thanks to Swift's enum abilities, I was able to build an efficient Quad Tree algorithm that leads to an efficient implementation of force directed graph (for algorithms like BFS, DFS, and Dijkstra's algorithm)
 
-## Improvements
-First off, there can be a pointer to a certain line of code that shows what line the bot is executing.
+## Future Improvements
+First off, there can be a pointer to a certain line of code that shows what line the bot is executing. Secondly, a PvP mode can be included in the game (as in, which player can realize the problem first)
